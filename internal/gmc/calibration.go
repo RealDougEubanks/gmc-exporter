@@ -92,6 +92,26 @@ func ParseCalibration(cfg []byte) (Calibration, error) {
 	return Calibration{Points: points}, nil
 }
 
+// dosePrecision is how many decimal places a computed dose rate keeps.
+//
+// The device stores its calibration as float32, so converting through it leaves
+// artefacts: a table point of 0.39 is really 0.3899999856948853, and 23 CPM
+// comes out as 0.14949999451637266 rather than 0.1495. Publishing that implies
+// far more precision than exists, since the device reports CPM as an integer
+// and the calibration carries two or three significant figures. Six decimals
+// removes the noise while leaving ample resolution for the low dose rates this
+// hardware actually measures.
+const dosePrecision = 6
+
+// roundDose trims float32 conversion artefacts from a computed dose rate.
+func roundDose(v float64) float64 {
+	if math.IsNaN(v) || math.IsInf(v, 0) {
+		return 0
+	}
+	scale := math.Pow(10, dosePrecision)
+	return math.Round(v*scale) / scale
+}
+
 // MicroSievertsPerHour converts a count rate to a dose rate.
 //
 // Between calibration points the conversion is linear. Below the lowest point
@@ -107,7 +127,7 @@ func (c Calibration) MicroSievertsPerHour(cpm float64) float64 {
 
 	first := c.Points[0]
 	if cpm <= float64(first.CPM) {
-		return cpm * (first.MicroSievertsPerHour / float64(first.CPM))
+		return roundDose(cpm * (first.MicroSievertsPerHour / float64(first.CPM)))
 	}
 
 	for i := 1; i < len(c.Points); i++ {
@@ -117,24 +137,24 @@ func (c Calibration) MicroSievertsPerHour(cpm float64) float64 {
 		}
 		span := float64(hi.CPM - lo.CPM)
 		if span == 0 {
-			return hi.MicroSievertsPerHour
+			return roundDose(hi.MicroSievertsPerHour)
 		}
 		frac := (cpm - float64(lo.CPM)) / span
-		return lo.MicroSievertsPerHour + frac*(hi.MicroSievertsPerHour-lo.MicroSievertsPerHour)
+		return roundDose(lo.MicroSievertsPerHour + frac*(hi.MicroSievertsPerHour-lo.MicroSievertsPerHour))
 	}
 
 	// Above the top of the table: extend the final segment's slope.
 	last := c.Points[len(c.Points)-1]
 	if len(c.Points) == 1 {
-		return cpm * (last.MicroSievertsPerHour / float64(last.CPM))
+		return roundDose(cpm * (last.MicroSievertsPerHour / float64(last.CPM)))
 	}
 	prev := c.Points[len(c.Points)-2]
 	span := float64(last.CPM - prev.CPM)
 	if span == 0 {
-		return last.MicroSievertsPerHour
+		return roundDose(last.MicroSievertsPerHour)
 	}
 	slope := (last.MicroSievertsPerHour - prev.MicroSievertsPerHour) / span
-	return last.MicroSievertsPerHour + (cpm-float64(last.CPM))*slope
+	return roundDose(last.MicroSievertsPerHour + (cpm-float64(last.CPM))*slope)
 }
 
 // ParseCalibrationSpec builds a calibration table from a configuration string
