@@ -491,3 +491,40 @@ func TestOversizedBodyIsBounded(t *testing.T) {
 		t.Errorf("error message is %d bytes; the body excerpt is not bounded", len(err.Error()))
 	}
 }
+
+// TestRateLimitIsNotRetried covers a response observed in production.
+//
+// When another exporter had submitted moments earlier, radmon.org answered a
+// submission with HTTP 200 and the body "Too soon <br>". The sink correctly
+// treated that as a failure rather than a success, but then retried it three
+// times in about two seconds.
+//
+// Retrying a rate limit cannot succeed: the server is saying "not yet", so
+// three attempts produce three rejections instead of one, against a free public
+// service. The reading is dropped and the next poll submits on schedule.
+func TestRateLimitIsNotRetried(t *testing.T) {
+	var attempts atomic.Int32
+
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		attempts.Add(1)
+		w.WriteHeader(http.StatusOK)
+		// The exact body observed from radmon.org.
+		_, _ = io.WriteString(w, "Too soon <br>")
+	}))
+	defer srv.Close()
+
+	cfg := baseConfig()
+	cfg.Retries = 3
+	s := newTestSink(t, cfg, testLocation(), srv.URL, slog.New(slog.NewTextHandler(io.Discard, nil)))
+
+	err := s.Publish(context.Background(), testReading())
+	if err == nil {
+		t.Fatal("a rate-limited submission should be reported as a failure")
+	}
+	if n := attempts.Load(); n != 1 {
+		t.Errorf("server was called %d times, want exactly 1: a rate limit must not be retried", n)
+	}
+	if !strings.Contains(err.Error(), "too soon") && !strings.Contains(strings.ToLower(err.Error()), "too soon") {
+		t.Errorf("error %q should explain that the submission was too soon", err)
+	}
+}
