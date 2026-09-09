@@ -116,6 +116,29 @@ it only works under `--privileged`. Use `--device`.
 Everything is configured by environment variable, prefixed `GOGMC_`. See
 [.env.example](.env.example) for the complete annotated list.
 
+Settings are resolved in this order, first match winning:
+
+1. Command-line flags
+2. Environment variables (including their `_FILE` variants)
+3. A config file
+4. Built-in defaults
+
+A config file is optional. Name one with `--config /path/to/config.ini`, or
+mount it at `/etc/gmc-exporter/config.ini` or `/config.ini` and it is picked up
+automatically. Because the environment takes precedence, one mounted file can be
+reused across deployments and overridden per container without editing it.
+
+```ini
+# Native format: section names supply the prefix, so these are equivalent
+# to GOGMC_SERIAL_PORT and GOGMC_RADMON_USER.
+[serial]
+port = /dev/ttyUSB0
+
+[radmon]
+enabled = true
+user = someuser
+```
+
 Every secret also accepts a `_FILE` variant, for example
 `GOGMC_RADMON_PASSWORD_FILE=/run/secrets/radmon`. **Prefer it.** A plain
 environment variable is visible to anyone who can run `docker inspect` and is
@@ -209,6 +232,27 @@ differently:
 Nothing is lost when a submission is skipped: the Prometheus and InfluxDB sinks
 still record every reading. There is deliberately no bulk upload API, so a gap
 in radmon's history cannot be backfilled later.
+
+### Migrating from the older GoGMC320 exporter
+
+That exporter's `config.ini` is recognised automatically. Mount it where it
+already lives and the sections are translated: `[radmon.org]` and `[influxdb]`
+enable and configure those sinks, and `[main] poll` becomes the poll interval.
+
+InfluxDB additionally defaults to measurement `data` with the legacy field
+names, so **the existing series continues** rather than a parallel one starting
+beside it. `[watchdog]` is ignored, and the startup log says so: this exporter
+cannot hang on a read, and exposes `/readyz` and `/health` instead.
+
+Two things do still have to change, and neither is optional:
+
+- **Device access.** That container bind-mounted `/dev/ttyUSB0` as a volume,
+  which grants no device permission and therefore needed `--privileged`. This
+  image runs as a non-root user, for which that combination does not work at
+  all. Use `--device=/dev/ttyUSB0` with `--group-add`, as shown in Quick start.
+- **The command.** That container passed the config path as an argument. Here it
+  is either found automatically or named with `--config`; a stray positional
+  argument is rejected with a message pointing at the right flag.
 
 ### Replacing an existing InfluxDB 1.x exporter
 

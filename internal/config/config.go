@@ -11,6 +11,7 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	"os"
 	"strings"
 	"time"
 
@@ -36,6 +37,11 @@ type Config struct {
 
 	// resolved holds every setting's provenance for the startup log.
 	resolved []resolved
+	// configFile is the file settings were read from, if any.
+	configFile string
+	// configNotes carries anything the file parser wants the operator to
+	// know, such as a legacy setting that no longer applies.
+	configNotes []string
 }
 
 // Serial describes the connection to the Geiger counter.
@@ -214,9 +220,33 @@ type Safecast struct {
 //
 // It returns every problem it found, not just the first, so a misconfigured
 // deployment can be fixed in one pass.
-func Load() (*Config, error) {
+func Load(configPath string) (*Config, error) {
 	l := newLoader()
 	cfg := &Config{}
+
+	// A file named explicitly must exist; one found by searching the default
+	// locations is optional. Silently ignoring a file the operator mounted is
+	// how a deployment ends up running on defaults with nobody noticing.
+	explicit := configPath != ""
+	if !explicit {
+		found, err := FindConfigFile()
+		if err != nil {
+			return nil, err
+		}
+		configPath = found
+	}
+	if configPath != "" {
+		settings, err := LoadConfigFile(configPath)
+		if err != nil {
+			if explicit || !os.IsNotExist(err) {
+				return nil, err
+			}
+		} else {
+			l.fileValues = settings.values
+			cfg.configFile = settings.path
+			cfg.configNotes = settings.notes
+		}
+	}
 
 	cfg.Serial = Serial{
 		Port:                l.String("SERIAL_PORT", "/dev/ttyUSB0"),
@@ -466,6 +496,12 @@ func (c *Config) StaleThreshold() time.Duration {
 // a placeholder, so an operator can see what the process actually loaded and
 // where each value came from.
 func (c *Config) LogEffective(log *slog.Logger) {
+	if c.configFile != "" {
+		log.Info("loaded configuration file", "path", c.configFile)
+	}
+	for _, note := range c.configNotes {
+		log.Info("configuration note", "note", note)
+	}
 	log.Info("effective configuration", "settings", len(c.resolved))
 	for _, r := range c.resolved {
 		log.Debug("setting", "key", r.Key, "value", r.Display, "source", string(r.Source))

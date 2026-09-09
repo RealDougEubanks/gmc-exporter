@@ -26,9 +26,10 @@ const FileSuffix = "_FILE"
 type source string
 
 const (
-	sourceDefault source = "default"
-	sourceEnv     source = "env"
-	sourceFile    source = "file"
+	sourceDefault    source = "default"
+	sourceEnv        source = "env"
+	sourceSecretFile source = "secret-file"
+	sourceConfigFile source = "config-file"
 )
 
 // resolved is one setting's effective value and provenance.
@@ -49,6 +50,10 @@ type resolved struct {
 type loader struct {
 	errs     []error
 	resolved []resolved
+	// fileValues holds settings read from a config file. Environment
+	// variables take precedence over these, per the documented order of
+	// flags, then environment, then file, then defaults.
+	fileValues map[string]string
 	// lookupEnv is injectable so tests do not have to mutate the real
 	// process environment.
 	lookupEnv func(string) (string, bool)
@@ -95,14 +100,18 @@ func (l *loader) raw(name string) (string, source, bool) {
 		}
 		// Trailing newlines are near-universal in secret files and are
 		// almost never part of the credential.
-		return strings.TrimRight(string(content), "\r\n"), sourceFile, true
+		return strings.TrimRight(string(content), "\r\n"), sourceSecretFile, true
 
 	case hasEnv:
 		return envVal, sourceEnv, true
-
-	default:
-		return "", sourceDefault, false
 	}
+
+	// The config file is consulted only after the environment, so a container
+	// can override a mounted file without editing it.
+	if v, ok := l.fileValues[name]; ok {
+		return v, sourceConfigFile, true
+	}
+	return "", sourceDefault, false
 }
 
 // record notes a setting's effective value for the startup log.

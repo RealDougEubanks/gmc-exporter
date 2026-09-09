@@ -335,8 +335,8 @@ func TestFileVariantReadsFromFile(t *testing.T) {
 		t.Fatalf("value from file = %q, want hunter2", got)
 	}
 	requireNoErrors(t, l)
-	if rec := lastRecorded(t, l); rec.Source != sourceFile {
-		t.Fatalf("source = %q, want %q", rec.Source, sourceFile)
+	if rec := lastRecorded(t, l); rec.Source != sourceSecretFile {
+		t.Fatalf("source = %q, want %q", rec.Source, sourceSecretFile)
 	}
 }
 
