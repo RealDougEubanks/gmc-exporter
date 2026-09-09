@@ -62,11 +62,13 @@ func main() {
 // them is worse than it sounds: `gmc-exporter --version` previously started a
 // full exporter instead of printing a version, which is a genuinely surprising
 // way for a diagnostic command to behave.
-func parseArgs(args []string, out io.Writer) (proceed bool, code int) {
+func parseArgs(args []string, out io.Writer) (proceed bool, code int, configPath string) {
 	fs := flag.NewFlagSet("gmc-exporter", flag.ContinueOnError)
 	fs.SetOutput(out)
 
 	showVersion := fs.Bool("version", false, "print version information and exit")
+	configFlag := fs.String("config", "",
+		"path to a config file (default: /etc/gmc-exporter/config.ini or /config.ini if present)")
 
 	fs.Usage = func() {
 		_, _ = fmt.Fprintf(out, "gmc-exporter reads a GQ Electronics GMC-series Geiger counter\n"+
@@ -78,18 +80,19 @@ func parseArgs(args []string, out io.Writer) (proceed bool, code int) {
 	}
 
 	if err := fs.Parse(args); err != nil {
-		return false, exitFailure
+		return false, exitFailure, ""
 	}
 	if *showVersion {
 		_, _ = fmt.Fprintln(out, versionLine(version, commit, buildDate))
-		return false, exitOK
+		return false, exitOK, ""
 	}
 	if fs.NArg() > 0 {
-		_, _ = fmt.Fprintf(out, "gmc-exporter: unexpected argument %q; this program takes no positional arguments "+
-			"and is configured through %s environment variables\n", fs.Arg(0), config.EnvPrefix)
-		return false, exitFailure
+		_, _ = fmt.Fprintf(out, "gmc-exporter: unexpected argument %q; pass a config file with "+
+			"--config %s, or configure this program through %s environment variables\n",
+			fs.Arg(0), fs.Arg(0), config.EnvPrefix)
+		return false, exitFailure, ""
 	}
-	return true, exitOK
+	return true, exitOK, *configFlag
 }
 
 // versionLine renders the build identifiers.
@@ -105,11 +108,12 @@ func versionLine(version, commit, buildDate string) string {
 // run holds the real body so deferred cleanup executes before the process
 // exits, which os.Exit would otherwise skip.
 func run() int {
-	if proceed, code := parseArgs(os.Args[1:], os.Stderr); !proceed {
+	proceed, code, configPath := parseArgs(os.Args[1:], os.Stderr)
+	if !proceed {
 		return code
 	}
 
-	cfg, err := config.Load()
+	cfg, err := config.Load(configPath)
 	if err != nil {
 		// Configuration problems are startup failures, not transient ones.
 		// Fail fast and loudly, naming what is wrong.

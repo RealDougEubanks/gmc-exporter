@@ -37,7 +37,7 @@ func loadWithEnv(t *testing.T, env map[string]string) (*Config, error) {
 	for key, value := range env {
 		t.Setenv(EnvPrefix+key, value)
 	}
-	return Load()
+	return Load("")
 }
 
 // minimalEnv is the smallest configuration that validates: one sink, nothing

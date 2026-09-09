@@ -85,7 +85,7 @@ func TestParseArgs(t *testing.T) {
 			t.Parallel()
 
 			var out bytes.Buffer
-			proceed, code := parseArgs(tc.args, &out)
+			proceed, code, _ := parseArgs(tc.args, &out)
 
 			if proceed != tc.wantProceed {
 				t.Errorf("proceed = %v, want %v", proceed, tc.wantProceed)
