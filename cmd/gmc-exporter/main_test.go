@@ -100,24 +100,21 @@ func TestParseArgs(t *testing.T) {
 	}
 }
 
-// TestVersionOutputCarriesBuildIdentifiers checks the version string is
-// actually useful for identifying a deployed build.
-func TestVersionOutputCarriesBuildIdentifiers(t *testing.T) {
+// TestVersionLineCarriesBuildIdentifiers checks the version string is actually
+// useful for identifying a deployed build.
+//
+// This tests versionLine directly rather than driving parseArgs and swapping
+// the package-level build variables. Mutating those from a parallel test is a
+// data race against every other test that reads them, which is exactly what the
+// race detector caught when this was written the other way round.
+func TestVersionLineCarriesBuildIdentifiers(t *testing.T) {
 	t.Parallel()
 
-	origVersion, origCommit := version, commit
-	t.Cleanup(func() { version, commit = origVersion, origCommit })
+	got := versionLine("v1.2.3", "deadbee", "2026-01-02T03:04:05Z")
 
-	version, commit = "v1.2.3", "deadbee"
-
-	var out bytes.Buffer
-	if proceed, code := parseArgs([]string{"--version"}, &out); proceed || code != exitOK {
-		t.Fatalf("proceed=%v code=%d, want false and %d", proceed, code, exitOK)
-	}
-
-	for _, want := range []string{"v1.2.3", "deadbee", "go1."} {
-		if !strings.Contains(out.String(), want) {
-			t.Errorf("version output %q does not contain %q", out.String(), want)
+	for _, want := range []string{"gmc-exporter", "v1.2.3", "deadbee", "2026-01-02T03:04:05Z", "go1."} {
+		if !strings.Contains(got, want) {
+			t.Errorf("version line %q does not contain %q", got, want)
 		}
 	}
 }
