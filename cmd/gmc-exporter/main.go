@@ -81,8 +81,7 @@ func parseArgs(args []string, out io.Writer) (proceed bool, code int) {
 		return false, exitFailure
 	}
 	if *showVersion {
-		_, _ = fmt.Fprintf(out, "gmc-exporter %s (commit %s, built %s, %s)\n",
-			version, commit, buildDate, runtime.Version())
+		_, _ = fmt.Fprintln(out, versionLine(version, commit, buildDate))
 		return false, exitOK
 	}
 	if fs.NArg() > 0 {
@@ -91,6 +90,16 @@ func parseArgs(args []string, out io.Writer) (proceed bool, code int) {
 		return false, exitFailure
 	}
 	return true, exitOK
+}
+
+// versionLine renders the build identifiers.
+//
+// It takes them as arguments rather than reading the package-level variables so
+// it can be tested without mutating global state, which a parallel test would
+// otherwise race against.
+func versionLine(version, commit, buildDate string) string {
+	return fmt.Sprintf("gmc-exporter %s (commit %s, built %s, %s)",
+		version, commit, buildDate, runtime.Version())
 }
 
 // run holds the real body so deferred cleanup executes before the process

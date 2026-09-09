@@ -281,9 +281,41 @@ func (s *Sink) attempt(ctx context.Context, fn string, params url.Values, want s
 			return fmt.Errorf("%w: rejected, check the radmon data-sending password: %s",
 				errPermanent, s.excerpt(text))
 		}
+		if looksLikeRateLimit(text) {
+			return fmt.Errorf("%w: submitted too soon after the previous reading, "+
+				"this reading is skipped: %s", errPermanent, s.excerpt(text))
+		}
 		return fmt.Errorf("unexpected response body, wanted %q: %s", want, s.excerpt(text))
 	}
 	return nil
+}
+
+// looksLikeRateLimit reports whether a 200 body is radmon.org rejecting a
+// submission for arriving too soon after the previous one.
+//
+// This is treated as permanent for the current reading, which is the opposite
+// of the usual instinct. Retrying a rate limit cannot succeed — the server is
+// saying "not yet", and three attempts two seconds apart is simply three
+// rejections instead of one. Worse, it is rude to a free public service run for
+// the community. The right response is to drop this reading and let the next
+// poll submit on schedule.
+//
+// Observed in production against a real account when another exporter had
+// submitted moments earlier: the body was "Too soon <br>".
+func looksLikeRateLimit(body string) bool {
+	lower := strings.ToLower(body)
+	for _, phrase := range []string{
+		"too soon",
+		"too fast",
+		"too many",
+		"rate limit",
+		"slow down",
+	} {
+		if strings.Contains(lower, phrase) {
+			return true
+		}
+	}
+	return false
 }
 
 // looksLikeAuthFailure reports whether a 200 body is radmon.org refusing the
