@@ -97,19 +97,38 @@ secrets:
     file: ./secrets/radmon_password
 ```
 
-### `--device` instead of `--privileged`
+### Device access
 
-Reading `/dev/ttyUSB0` does not require root. It requires membership of the
-group that owns the device node, usually `dialout`. Passing `--device` plus
-`--group-add` grants exactly that, and nothing else.
+Reading `/dev/ttyUSB0` needs two things: the container must be *allowed* the
+device by the kernel's device cgroup, and the process must be able to *open* the
+node, which is `crw-rw---- root:dialout`. Those are separate mechanisms, and
+each of the two ways of passing a device satisfies only one of them.
 
-`--privileged` is often used here instead, but it grants every capability on the
-host in order to solve a file-permission problem. If you are migrating a
-privileged container, this is a free security improvement.
+This image runs as a non-root user, so both have to be arranged explicitly.
+Measured against a real device node:
 
-Note that bind-mounting the device (`-v /dev/ttyUSB0:/dev/ttyUSB0`) is *not*
-equivalent: it makes the node visible but grants no cgroup device permission, so
-it only works under `--privileged`. Use `--device`.
+| Device passed as | `--privileged` | `--group-add` | Result |
+|---|---|---|---|
+| `--device` | no | yes | ✅ works — **recommended** |
+| volume mount | yes | yes | ✅ works |
+| volume mount | yes | no | ❌ permission denied |
+| volume mount | no | yes | ❌ blocked by the device cgroup |
+
+A volume mount makes the node visible but grants no device permission, which is
+why that route still needs `--privileged`. `--device` grants the cgroup rule
+directly, so privileged mode becomes unnecessary — and privileged grants every
+capability on the host to solve what is really a file-permission problem.
+
+Find the group with `stat -c '%g' /dev/ttyUSB0`; it is usually 16 (`dialout`).
+
+```bash
+# Recommended
+docker run --device=/dev/ttyUSB0 --group-add="$(stat -c '%g' /dev/ttyUSB0)" ...
+```
+
+If the container cannot open the device it says so precisely, naming the group
+the node actually belongs to and the flags to add, and it keeps retrying rather
+than exiting.
 
 ## Configuration
 
@@ -244,15 +263,19 @@ names, so **the existing series continues** rather than a parallel one starting
 beside it. `[watchdog]` is ignored, and the startup log says so: this exporter
 cannot hang on a read, and exposes `/readyz` and `/health` instead.
 
-Two things do still have to change, and neither is optional:
+Two things still change, and only one of them is a real edit.
 
-- **Device access.** That container bind-mounted `/dev/ttyUSB0` as a volume,
-  which grants no device permission and therefore needed `--privileged`. This
-  image runs as a non-root user, for which that combination does not work at
-  all. Use `--device=/dev/ttyUSB0` with `--group-add`, as shown in Quick start.
-- **The command.** That container passed the config path as an argument. Here it
-  is either found automatically or named with `--config`; a stray positional
-  argument is rejected with a message pointing at the right flag.
+**Device access — add one parameter.** Keep the volume mount and keep
+`--privileged` exactly as they are, and add `--group-add 16` (or whatever
+`stat -c '%g' /dev/ttyUSB0` reports). That is the whole change: this image runs
+as a non-root user, so it needs to be in the device's group. See
+[Device access](#device-access) for why, and for the more secure form that drops
+`--privileged` entirely.
+
+**The command — remove it.** That container passed the config path as an
+argument. Here the file is found automatically at `/config.ini`, so the command
+should be empty. A stray positional argument is rejected with a message pointing
+at `--config`.
 
 ### Replacing an existing InfluxDB 1.x exporter
 
@@ -304,7 +327,7 @@ Add a container with:
 |---|---|
 | Repository | `dougeubanks/gmc-exporter:latest` |
 | Device | `/dev/ttyUSB0` |
-| Extra parameters | `--group-add 16` (use `stat -c '%g' /dev/ttyUSB0` to confirm the GID) |
+| Extra parameters | `--group-add 16` (confirm with `stat -c '%g' /dev/ttyUSB0`) |
 | Port | `9101` |
 | Variables | `GOGMC_*` as above |
 
@@ -312,10 +335,15 @@ Leave **Privileged off**. This was verified on a real Unraid host: the exporter
 ran as `nonroot` with `--device` plus `--group-add`, reading the counter for
 several minutes with no elevated privileges.
 
-Note that Unraid's template UI often maps a device by adding a *volume* mapping
-for `/dev/ttyUSB0`. That is not the same thing — a bind mount makes the node
-visible but grants no cgroup device permission, which is why such setups need
-`--privileged` to work at all. Use the Device field, not a path mapping.
+Unraid's template UI often maps a device by adding a *volume* mapping for
+`/dev/ttyUSB0` rather than using the Device field. That still works, but only
+with `--privileged` and `--group-add`, because a volume mount grants no device
+permission of its own. Switching it to the Device field lets you turn
+`--privileged` off.
+
+If you are migrating an existing container, the smallest working change is to
+leave the mapping and privileged setting alone and just add `--group-add 16` to
+Extra Parameters.
 
 Configuration is by environment variable, so there is no config file to mount.
 

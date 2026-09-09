@@ -49,7 +49,7 @@ func Open(cfg Config) (Port, error) {
 
 	fd, err := unix.Open(cfg.Path, unix.O_RDWR|unix.O_NOCTTY|unix.O_NONBLOCK, 0)
 	if err != nil {
-		return nil, fmt.Errorf("serialport: open %s: %w", cfg.Path, err)
+		return nil, openError(cfg.Path, err)
 	}
 
 	// Raw 8N1, no flow control, ignore modem control lines, enable receiver.
@@ -74,6 +74,44 @@ func Open(cfg Config) (Port, error) {
 		return nil, err
 	}
 	return p, nil
+}
+
+// openError explains a failure to open the device in terms of what to change.
+//
+// A container that cannot reach its serial device reports "permission denied"
+// or "operation not permitted", which is accurate and useless: the cause is
+// almost always a missing supplementary group or a device passed as a volume
+// mount rather than with --device, and neither is guessable from the message.
+// Naming the actual group of the actual device node turns a support question
+// into a copyable command.
+func openError(path string, err error) error {
+	switch {
+	case errors.Is(err, unix.EACCES), errors.Is(err, unix.EPERM):
+		hint := "check that the container can reach the device"
+		var st unix.Stat_t
+		if statErr := unix.Stat(path, &st); statErr == nil {
+			hint = fmt.Sprintf(
+				"%s is owned by group %d. Pass the device through and join that group:\n"+
+					"  docker run --device=%s --group-add=%d ...\n"+
+					"If the device is bind-mounted as a volume instead of passed with "+
+					"--device, the container also needs --privileged, because a volume "+
+					"mount grants no device permission of its own",
+				path, st.Gid, path, st.Gid)
+		}
+		return fmt.Errorf("serialport: open %s: %w (this process runs as uid %d, gid %d; %s)",
+			path, err, unix.Getuid(), unix.Getgid(), hint)
+
+	case errors.Is(err, unix.ENOENT):
+		return fmt.Errorf("serialport: open %s: %w (the device node does not exist; "+
+			"check it is plugged in and that the container was given it)", path, err)
+
+	case errors.Is(err, unix.EBUSY):
+		return fmt.Errorf("serialport: open %s: %w (another process holds the port; "+
+			"the serial link is exclusive, so stop whatever else is reading it)", path, err)
+
+	default:
+		return fmt.Errorf("serialport: open %s: %w", path, err)
+	}
 }
 
 // Read blocks until at least one byte is available, the read timeout elapses,
