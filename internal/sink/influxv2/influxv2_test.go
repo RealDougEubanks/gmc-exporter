@@ -38,7 +38,7 @@ func testConfig(serverURL string) config.InfluxV2 {
 	return config.InfluxV2{
 		Enabled:     true,
 		URL:         serverURL,
-		Token:       redact.Secret(testToken),
+		Token:       redact.New(testToken),
 		Org:         "home",
 		Bucket:      "geiger",
 		Measurement: "radiation",
@@ -499,7 +499,7 @@ func TestPublishNeverLeaksToken(t *testing.T) {
 func TestSecretIsNotLoggableByAccident(t *testing.T) {
 	var logs bytes.Buffer
 	log := slog.New(slog.NewJSONHandler(&logs, nil))
-	log.Info("careless", "token", redact.Secret(testToken))
+	log.Info("careless", "token", redact.New(testToken))
 	if strings.Contains(logs.String(), testToken) {
 		t.Errorf("redact.Secret printed its value: %s", logs.String())
 	}
@@ -508,7 +508,7 @@ func TestSecretIsNotLoggableByAccident(t *testing.T) {
 func TestNewRejectsInvalidConfig(t *testing.T) {
 	valid := config.InfluxV2{
 		URL:    "http://localhost:8086",
-		Token:  redact.Secret(testToken),
+		Token:  redact.New(testToken),
 		Org:    "home",
 		Bucket: "geiger",
 	}
@@ -519,7 +519,7 @@ func TestNewRejectsInvalidConfig(t *testing.T) {
 		{"no URL", func(c *config.InfluxV2) { c.URL = "" }},
 		{"no org", func(c *config.InfluxV2) { c.Org = "" }},
 		{"no bucket", func(c *config.InfluxV2) { c.Bucket = "" }},
-		{"no token", func(c *config.InfluxV2) { c.Token = "" }},
+		{"no token", func(c *config.InfluxV2) { c.Token = redact.Secret{} }},
 		{"wrong scheme", func(c *config.InfluxV2) { c.URL = "udp://localhost:8089" }},
 	}
 	for _, tc := range tests {
@@ -536,7 +536,7 @@ func TestNewRejectsInvalidConfig(t *testing.T) {
 func TestNewDoesNotRevealTokenInConfigErrors(t *testing.T) {
 	_, err := New(config.InfluxV2{
 		URL:    "http://%zz",
-		Token:  redact.Secret(testToken),
+		Token:  redact.New(testToken),
 		Org:    "home",
 		Bucket: "geiger",
 	}, discardLogger())

@@ -126,10 +126,10 @@ func (l *loader) Secret(name string) redact.Secret {
 	v, src, ok := l.raw(name)
 	if !ok {
 		l.record(name, sourceDefault, "(unset)")
-		return ""
+		return redact.Secret{}
 	}
 	l.record(name, src, redact.Placeholder)
-	return redact.Secret(v)
+	return redact.New(v)
 }
 
 // Bool reads a boolean setting.

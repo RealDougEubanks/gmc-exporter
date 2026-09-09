@@ -23,12 +23,34 @@ import (
 // Placeholder replaces any redacted value.
 const Placeholder = "REDACTED"
 
-// Secret is a string that will not print.
+// Secret is a credential that will not print.
 //
-// It implements the interfaces that fmt, log/slog and encoding/json reach for,
-// so a Secret stays hidden whether it is logged with %v, %s, structured
-// logging, or serialised. Call Reveal explicitly at the point of use.
-type Secret string
+// The value is held in a closure rather than in a string field, and that is the
+// entire point of the design. Implementing Stringer and Formatter is enough to
+// protect a Secret that is formatted directly, but not one reached through the
+// struct that holds it: fmt walks unexported fields by reflection and cannot
+// call methods on what it finds there, so a plain `type Secret string` inside a
+// sink struct prints in the clear the moment anyone logs the whole struct.
+//
+//	fmt.Sprintf("%v", sink)  ->  {radmon.org doug hunter2}
+//
+// A func field has no readable contents, so reflection can only print its
+// address. That closes the hole centrally, for every struct that holds a
+// Secret, instead of relying on each one to remember to define a String method.
+//
+// The cost is that Secret is no longer comparable and no longer convertible
+// from a string, so it must be built with New.
+type Secret struct {
+	reveal func() string
+}
+
+// New wraps a value as a Secret.
+func New(value string) Secret {
+	if value == "" {
+		return Secret{}
+	}
+	return Secret{reveal: func() string { return value }}
+}
 
 // String implements fmt.Stringer.
 func (s Secret) String() string { return Placeholder }
@@ -53,11 +75,17 @@ func (s Secret) MarshalJSON() ([]byte, error) { return []byte(`"` + Placeholder 
 func (s Secret) MarshalText() ([]byte, error) { return []byte(Placeholder), nil }
 
 // Reveal returns the underlying value. Every call site is a deliberate decision
-// to expose the secret, and should be sending it to a server rather than a log.
-func (s Secret) Reveal() string { return string(s) }
+// to expose the secret, and should be handing it to a server rather than to a
+// log.
+func (s Secret) Reveal() string {
+	if s.reveal == nil {
+		return ""
+	}
+	return s.reveal()
+}
 
 // IsZero reports whether the secret is empty, without revealing it.
-func (s Secret) IsZero() bool { return len(s) == 0 }
+func (s Secret) IsZero() bool { return s.reveal == nil || s.reveal() == "" }
 
 // URL strips the query string and any userinfo from a URL, keeping enough to
 // identify which endpoint was involved.

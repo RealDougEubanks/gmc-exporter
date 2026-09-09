@@ -21,7 +21,7 @@ const thePassword = "hunter2-SUPER-SECRET"
 func TestSecretNeverPrints(t *testing.T) {
 	t.Parallel()
 
-	s := Secret(thePassword)
+	s := New(thePassword)
 
 	cases := map[string]string{
 		"%v":              fmt.Sprintf("%v", s),
@@ -63,6 +63,55 @@ func TestSecretNeverPrints(t *testing.T) {
 	}
 }
 
+// TestSecretSurvivesReflection is the reason Secret holds its value in a
+// closure rather than in a string field.
+//
+// fmt walks unexported struct fields by reflection and cannot call methods on
+// what it finds, so Stringer and Formatter protect a Secret formatted directly
+// but not one reached through the struct that holds it. With `type Secret
+// string` this test fails: formatting a sink prints its password in the clear.
+//
+// Every sink in this project keeps its credential in an unexported field, so
+// this is the case that actually matters. If someone later simplifies Secret
+// back to a string type, this test is what stops it reaching production.
+func TestSecretSurvivesReflection(t *testing.T) {
+	t.Parallel()
+
+	// Deliberately unexported, mirroring how every sink stores its credential.
+	type sinkLike struct {
+		name     string
+		user     string
+		password Secret
+	}
+
+	s := sinkLike{name: "radmon.org", user: "doug", password: New(thePassword)}
+
+	for _, format := range []string{"%v", "%+v", "%#v", "%s", "%q"} {
+		got := fmt.Sprintf(format, s)
+		if strings.Contains(got, thePassword) {
+			t.Errorf("formatting the containing struct with %s leaked the secret: %s", format, got)
+		}
+	}
+
+	// Pointers and nesting are the same hazard one level down.
+	nested := struct{ Inner *sinkLike }{Inner: &s}
+	if got := fmt.Sprintf("%+v", nested); strings.Contains(got, thePassword) {
+		t.Errorf("nested struct leaked the secret: %s", got)
+	}
+
+	// A zero Secret must be safe to use rather than panicking on a nil func.
+	var zero Secret
+	if !zero.IsZero() {
+		t.Error("a zero Secret should report itself empty")
+	}
+	if zero.Reveal() != "" {
+		t.Error("a zero Secret should reveal an empty string")
+	}
+	if got := fmt.Sprintf("%v", zero); got != Placeholder {
+		t.Errorf("a zero Secret formatted as %q, want %q", got, Placeholder)
+	}
+}
+
 // TestSecretNeverReachesStructuredLogs checks slog specifically, since that is
 // what this project logs with.
 func TestSecretNeverReachesStructuredLogs(t *testing.T) {
@@ -71,7 +120,7 @@ func TestSecretNeverReachesStructuredLogs(t *testing.T) {
 	var buf bytes.Buffer
 	log := slog.New(slog.NewJSONHandler(&buf, &slog.HandlerOptions{Level: slog.LevelDebug}))
 
-	s := Secret(thePassword)
+	s := New(thePassword)
 	log.Info("configured", "password", s)
 	log.Info("configured group", slog.Group("radmon", "user", "doug", "password", s))
 	log.Error("request failed", "error", fmt.Errorf("bad credentials for %v", s))

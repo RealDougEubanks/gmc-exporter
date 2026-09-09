@@ -15,6 +15,7 @@ import (
 
 	"github.com/RealDougEubanks/gmc-exporter/internal/config"
 	"github.com/RealDougEubanks/gmc-exporter/internal/reading"
+	"github.com/RealDougEubanks/gmc-exporter/internal/redact"
 	"github.com/RealDougEubanks/gmc-exporter/internal/sink"
 )
 
@@ -44,7 +45,7 @@ func baseConfig() config.Radmon {
 	return config.Radmon{
 		Enabled:  true,
 		User:     "testuser",
-		Password: canaryPassword,
+		Password: redact.New(canaryPassword),
 		Timeout:  2 * time.Second,
 		Retries:  0,
 	}
@@ -438,7 +439,7 @@ func TestNewRejectsMissingCredentials(t *testing.T) {
 	}{
 		{"no user", func(c *config.Radmon) { c.User = "" }, "GOGMC_RADMON_USER"},
 		{"blank user", func(c *config.Radmon) { c.User = "   " }, "GOGMC_RADMON_USER"},
-		{"no password", func(c *config.Radmon) { c.Password = "" }, "GOGMC_RADMON_PASSWORD"},
+		{"no password", func(c *config.Radmon) { c.Password = redact.Secret{} }, "GOGMC_RADMON_PASSWORD"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

@@ -40,7 +40,7 @@ func testConfig(serverURL string) config.InfluxV1 {
 		URL:         serverURL,
 		Database:    "geiger",
 		User:        "gmc",
-		Password:    redact.Secret(testPassword),
+		Password:    redact.New(testPassword),
 		Measurement: "radiation",
 		Timeout:     2 * time.Second,
 		Retries:     2,
@@ -294,7 +294,7 @@ func TestPublishOmitsAuthWhenUnauthenticated(t *testing.T) {
 
 	cfg := testConfig(srv.URL)
 	cfg.User = ""
-	cfg.Password = ""
+	cfg.Password = redact.Secret{}
 	s := newSink(t, cfg, discardLogger())
 	if err := s.Publish(context.Background(), sampleReading()); err != nil {
 		t.Fatalf("Publish: %v", err)
@@ -512,7 +512,7 @@ func TestNewDoesNotRevealPasswordInConfigErrors(t *testing.T) {
 	_, err := New(config.InfluxV1{
 		URL:      "http://%zz",
 		Database: "geiger",
-		Password: redact.Secret(testPassword),
+		Password: redact.New(testPassword),
 	}, discardLogger())
 	if err == nil {
 		t.Fatal("New accepted an unparseable URL")
