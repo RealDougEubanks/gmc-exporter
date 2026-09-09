@@ -1,0 +1,128 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+# The default token needs nothing beyond reading the repository here.
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  GO_VERSION: "1.25"
+
+jobs:
+  test:
+    name: Build and test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache: true
+
+      - name: Verify go.mod and go.sum are tidy
+        run: |
+          go mod tidy
+          if ! git diff --exit-code -- go.mod go.sum; then
+            echo "::error::go.mod or go.sum is not tidy. Run 'go mod tidy' and commit the result."
+            exit 1
+          fi
+
+      - name: gofmt
+        run: |
+          unformatted=$(gofmt -l .)
+          if [ -n "$unformatted" ]; then
+            echo "::error::These files are not gofmt-formatted:"
+            echo "$unformatted"
+            exit 1
+          fi
+
+      - name: go vet
+        run: go vet ./...
+
+      - name: Build
+        run: go build ./...
+
+      # The protocol tests replay byte sequences captured from real hardware,
+      # so this exercises genuine device behaviour on a runner with no Geiger
+      # counter attached. The hardware integration test is opt-in and stays
+      # skipped here.
+      - name: Test with race detector
+        run: go test -race -covermode=atomic -coverprofile=coverage.out ./...
+
+      - name: Coverage summary
+        run: |
+          go tool cover -func=coverage.out | tail -n 30
+          total=$(go tool cover -func=coverage.out | awk '/^total:/ {print $3}')
+          echo "### Coverage: ${total}" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage.out
+          if-no-files-found: error
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache: true
+
+      - uses: golangci/golangci-lint-action@v6
+        with:
+          version: latest
+          args: --timeout=5m
+
+  image:
+    name: Build image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-qemu-action@v3
+
+      - uses: docker/setup-buildx-action@v3
+
+      # Built for both target platforms but never pushed. This catches a
+      # broken Dockerfile or a cross-compilation failure on the pull request
+      # rather than at release time.
+      - name: Build (no push)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: false
+          build-args: |
+            VERSION=ci-${{ github.sha }}
+            COMMIT=${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Report image size
+        run: |
+          docker buildx build --load --platform linux/amd64 \
+            --build-arg VERSION=ci --build-arg COMMIT=${{ github.sha }} \
+            -t gmc-exporter:ci .
+          size=$(docker image inspect gmc-exporter:ci --format '{{.Size}}')
+          mb=$(( size / 1024 / 1024 ))
+          echo "### Image size: ${mb} MB" >> "$GITHUB_STEP_SUMMARY"
+          # The whole point of the multi-stage build is a small image. If it
+          # grows past 60MB something has pulled the toolchain back in.
+          if [ "$mb" -gt 60 ]; then
+            echo "::error::Image is ${mb}MB, expected well under 60MB"
+            exit 1
+          fi

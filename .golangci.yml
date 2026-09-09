@@ -1,0 +1,43 @@
+version: "2"
+
+linters:
+  enable:
+    - errcheck
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+    # An unattended exporter must not be killed by a library returning a
+    # surprise. bodyclose and noctx catch the leaks that build up over months.
+    - bodyclose
+    - noctx
+    - errorlint
+    - misspell
+    - unconvert
+    - revive
+
+  settings:
+    errcheck:
+      # Deliberately ignored errors must be written as _ = f(), so that
+      # ignoring one is always a visible decision.
+      check-blank: true
+    revive:
+      rules:
+        - name: exported
+          disabled: true
+
+  exclusions:
+    rules:
+      # Test files legitimately ignore close errors on throwaway servers.
+      - path: _test\.go
+        linters:
+          - errcheck
+          - bodyclose
+
+formatters:
+  enable:
+    - gofmt
+
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0
