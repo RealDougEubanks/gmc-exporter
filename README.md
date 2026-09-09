@@ -182,19 +182,33 @@ logging a transport failure writes the password to disk. Every transport error
 in this project is redacted before it can be logged, and there are tests
 asserting no credential reaches log output.
 
-**On submission rate.** radmon.org rejects submissions that arrive too close
-together, answering HTTP 200 with a body of `Too soon`. That is a success status
-carrying a failure, so an implementation that only checks the status code will
-report every one of those as a successful submission.
+**On submission rate.** radmon.org enforces a minimum interval of **30 seconds**
+between submissions, hardcoded in the service. Submitting faster is answered
+with HTTP 200 and a body of `Too soon`.
 
-A rejected submission is never retried. Retrying cannot succeed — the server is
-saying "not yet" — and each attempt restarts the interval, so retries turn one
-rejection into a permanent loop where every subsequent poll is also too soon.
-The reading is dropped and the next poll submits on schedule.
+That is a success status carrying a failure, and it is the important detail: an
+implementation that checks only the status code reports every rejected
+submission as a success, and its operator has no way to know the data is not
+arriving.
 
-If you see occasional `Too soon` rejections at a 60 second poll interval, raise
-`GOGMC_POLL_INTERVAL` slightly. Nothing is lost when one is skipped, and the
-Prometheus and InfluxDB sinks still record every reading.
+A rejected submission is never retried, and after one the sink goes quiet for a
+cooldown that doubles from 60 seconds to a 15 minute cap, clearing as soon as a
+submission is accepted. Retrying cannot succeed — the server is saying "not
+yet" — and it is rude to a free service run by volunteers on a Raspberry Pi.
+
+Telling the failure modes apart is easy, because radmon.org answers each
+differently:
+
+| Body | Meaning |
+|---|---|
+| `OK` | Accepted |
+| `Too soon` | Rate limited; credentials are fine |
+| `Incorrect.` | Wrong data-sending password |
+| `There is no user by that name, please register.` | Wrong username |
+
+Nothing is lost when a submission is skipped: the Prometheus and InfluxDB sinks
+still record every reading. There is deliberately no bulk upload API, so a gap
+in radmon's history cannot be backfilled later.
 
 ### Replacing an existing InfluxDB 1.x exporter
 
