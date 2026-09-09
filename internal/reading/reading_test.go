@@ -203,3 +203,48 @@ func TestAverageConcurrentAccess(t *testing.T) {
 		t.Fatalf("Mean after concurrent use = %v, want a positive finite value", got)
 	}
 }
+
+// TestAverageRejectsNonFiniteSamples pins that one bad sample cannot suppress
+// the mean for a whole window.
+//
+// Storing a NaN would make every subsequent mean non-finite until it rotated
+// out, which at the default settings is sixty polls. Reporting zero instead
+// would be no better, because zero is a legitimate count rate and nothing
+// downstream could tell the two apart.
+func TestAverageRejectsNonFiniteSamples(t *testing.T) {
+	t.Parallel()
+
+	avg := NewAverage(4)
+	avg.Add(10)
+	avg.Add(20)
+
+	before := avg.Mean()
+	if before != 15 {
+		t.Fatalf("mean = %v, want 15", before)
+	}
+
+	for _, bad := range []float64{
+		math.NaN(),
+		math.Inf(1),
+		math.Inf(-1),
+	} {
+		got := avg.Add(bad)
+		if math.IsNaN(got) || math.IsInf(got, 0) {
+			t.Fatalf("Add(%v) returned a non-finite mean %v", bad, got)
+		}
+		if got != before {
+			t.Fatalf("Add(%v) changed the mean from %v to %v; a rejected sample must not count",
+				bad, before, got)
+		}
+	}
+
+	// The rejected samples must not have consumed slots in the window.
+	if n := avg.Count(); n != 2 {
+		t.Fatalf("Count() = %d, want 2; non-finite samples should not occupy the window", n)
+	}
+
+	// Good samples still work afterwards.
+	if got := avg.Add(30); got != 20 {
+		t.Fatalf("mean after recovery = %v, want 20", got)
+	}
+}

@@ -267,12 +267,15 @@ func TestHealthUnhealthyStates(t *testing.T) {
 			wantDetail:    "no successful reading yet",
 		},
 		{
+			// The detail names the actual age and threshold rather than
+			// saying only "stale", so an operator reading the response does
+			// not have to go and look up what the threshold was configured to.
 			name:          "stale reading",
 			status:        &fakeStatus{status: poller.Status{Connected: true}, age: time.Hour, ever: true},
 			stale:         time.Minute,
 			wantCode:      http.StatusServiceUnavailable,
 			wantDepStatus: "degraded",
-			wantDetail:    "readings are stale",
+			wantDetail:    "last successful reading was 1h0m0s ago, threshold is 1m0s",
 		},
 	}
 
@@ -553,5 +556,47 @@ func TestNewWithoutLoggerDoesNotPanic(t *testing.T) {
 	}
 	if rec := get(t, s.Handler(), "/healthz"); rec.Code != http.StatusOK {
 		t.Fatalf("/healthz = %d, want 200", rec.Code)
+	}
+}
+
+// TestHealthStatusAgreesWithItsDependencies pins a real inconsistency.
+//
+// The reported reading age is rounded to whole seconds, but the staleness
+// comparison must use the full-precision value. When it did not, a 1.5s age
+// against a 1s threshold produced a 503 whose only dependency still read "ok",
+// so a monitor reading the body saw nothing wrong with a service the status
+// code called unhealthy.
+func TestHealthStatusAgreesWithItsDependencies(t *testing.T) {
+	// Sub-second ages are where rounding and comparison can disagree.
+	for _, age := range []time.Duration{
+		1500 * time.Millisecond,
+		1999 * time.Millisecond,
+		2500 * time.Millisecond,
+		999 * time.Millisecond,
+	} {
+		h := newTestServer(t, &fakeStatus{
+			status: poller.Status{Connected: true},
+			age:    age,
+			ever:   true,
+		}, time.Second)
+
+		rec := get(t, h, "/health")
+		body := decode[map[string]any](t, rec)
+
+		deps, _ := body["dependencies"].([]any)
+		if len(deps) == 0 {
+			t.Fatalf("age %s: no dependencies reported", age)
+		}
+		dep, _ := deps[0].(map[string]any)
+		depStatus, _ := dep["status"].(string)
+
+		unhealthy := rec.Code == http.StatusServiceUnavailable
+		depSaysProblem := depStatus != "ok"
+
+		if unhealthy != depSaysProblem {
+			t.Errorf("age %s: HTTP %d but dependency status %q; "+
+				"the status code and the body must not disagree",
+				age, rec.Code, depStatus)
+		}
 	}
 }

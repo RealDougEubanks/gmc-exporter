@@ -228,7 +228,14 @@ func (s *Server) handleHealth(w http.ResponseWriter, _ *http.Request) {
 			Calibration: st.Calibration,
 			LastError:   st.LastErrorText,
 		}
-		if age, ever := s.status.SinceLastSuccess(); ever {
+
+		// The reported age is rounded to whole seconds for readability, but
+		// the staleness comparison below uses the full-precision value. Using
+		// the rounded number would let the endpoint return 503 while every
+		// dependency it lists still reads "ok", which is exactly the sort of
+		// self-contradiction that wastes an operator's time at 3am.
+		age, everRead := s.status.SinceLastSuccess()
+		if everRead {
 			seconds := int64(age.Seconds())
 			resp.Device.LastReadingAgeS = &seconds
 		}
@@ -241,10 +248,12 @@ func (s *Server) handleHealth(w http.ResponseWriter, _ *http.Request) {
 		switch {
 		case !st.Connected:
 			dep.Status, dep.Detail = "fail", "serial port is not open"
-		case resp.Device.LastReadingAgeS == nil:
+		case !everRead:
 			dep.Status, dep.Detail = "degraded", "no successful reading yet"
-		case s.stale > 0 && time.Duration(*resp.Device.LastReadingAgeS)*time.Second > s.stale:
-			dep.Status, dep.Detail = "degraded", "readings are stale"
+		case s.stale > 0 && age > s.stale:
+			dep.Status = "degraded"
+			dep.Detail = fmt.Sprintf("last successful reading was %s ago, threshold is %s",
+				age.Round(time.Second), s.stale)
 		default:
 			dep.Status = "ok"
 		}

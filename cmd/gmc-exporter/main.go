@@ -5,7 +5,9 @@ package main
 import (
 	"context"
 	"errors"
+	"flag"
 	"fmt"
+	"io"
 	"log/slog"
 	"net/http"
 	"os"
@@ -53,9 +55,51 @@ func main() {
 	os.Exit(run())
 }
 
+// parseArgs handles the few command-line flags and reports whether the process
+// should carry on running.
+//
+// Unrecognised arguments are rejected rather than ignored. Silently accepting
+// them is worse than it sounds: `gmc-exporter --version` previously started a
+// full exporter instead of printing a version, which is a genuinely surprising
+// way for a diagnostic command to behave.
+func parseArgs(args []string, out io.Writer) (proceed bool, code int) {
+	fs := flag.NewFlagSet("gmc-exporter", flag.ContinueOnError)
+	fs.SetOutput(out)
+
+	showVersion := fs.Bool("version", false, "print version information and exit")
+
+	fs.Usage = func() {
+		fmt.Fprintf(out, "gmc-exporter reads a GQ Electronics GMC-series Geiger counter\n"+
+			"and publishes its readings to the configured backends.\n\n"+
+			"It is configured entirely by environment variables, all prefixed %s.\n"+
+			"See https://github.com/RealDougEubanks/gmc-exporter for the full list.\n\n"+
+			"Usage:\n  gmc-exporter [flags]\n\nFlags:\n", config.EnvPrefix)
+		fs.PrintDefaults()
+	}
+
+	if err := fs.Parse(args); err != nil {
+		return false, exitFailure
+	}
+	if *showVersion {
+		fmt.Fprintf(out, "gmc-exporter %s (commit %s, built %s, %s)\n",
+			version, commit, buildDate, runtime.Version())
+		return false, exitOK
+	}
+	if fs.NArg() > 0 {
+		fmt.Fprintf(out, "gmc-exporter: unexpected argument %q; this program takes no positional arguments "+
+			"and is configured through %s environment variables\n", fs.Arg(0), config.EnvPrefix)
+		return false, exitFailure
+	}
+	return true, exitOK
+}
+
 // run holds the real body so deferred cleanup executes before the process
 // exits, which os.Exit would otherwise skip.
 func run() int {
+	if proceed, code := parseArgs(os.Args[1:], os.Stderr); !proceed {
+		return code
+	}
+
 	cfg, err := config.Load()
 	if err != nil {
 		// Configuration problems are startup failures, not transient ones.

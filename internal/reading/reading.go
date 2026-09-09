@@ -81,9 +81,20 @@ func NewAverage(size int) *Average {
 }
 
 // Add records a sample and returns the updated mean.
+//
+// A non-finite sample is rejected rather than stored. Storing one would poison
+// every subsequent mean until it rotated out of the window, which at the
+// default settings is sixty polls, or an hour of suppressed averages from a
+// single bad reading. Returning zero in the meantime would be worse than
+// useless, because zero is also a legitimate count rate and a dashboard could
+// not tell the two apart.
 func (a *Average) Add(v float64) float64 {
 	a.mu.Lock()
 	defer a.mu.Unlock()
+
+	if math.IsNaN(v) || math.IsInf(v, 0) {
+		return a.meanLocked()
+	}
 
 	a.window[a.next] = v
 	a.next = (a.next + 1) % a.size
