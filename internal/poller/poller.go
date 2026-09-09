@@ -63,6 +63,9 @@ type DeviceInfo struct {
 	Model    string
 	Firmware string
 	Serial   string
+	// Version is the full version string exactly as the device reported it,
+	// kept because existing dashboards commonly label series with it.
+	Version string
 }
 
 // New builds a poller. The opener defaults to the real serial port.
@@ -171,7 +174,7 @@ func (p *Poller) sample(ctx context.Context) (reading.Reading, error) {
 	}
 
 	p.mu.RLock()
-	device, calibration := p.device, p.calibration
+	device, calibration, info := p.device, p.calibration, p.info
 	p.mu.RUnlock()
 
 	if device == nil {
@@ -196,6 +199,12 @@ func (p *Poller) sample(ctx context.Context) (reading.Reading, error) {
 		MicroSievertsPerHour: calibration.MicroSievertsPerHour(float64(cpm)),
 		Voltage:              reading.None[float64](),
 		TemperatureC:         reading.None[float64](),
+		Device: reading.DeviceIdentity{
+			Model:    info.Model,
+			Firmware: info.Firmware,
+			Serial:   info.Serial,
+			Version:  info.Version,
+		},
 	}
 
 	// Voltage and temperature are supplementary. A failure to read either is
@@ -283,7 +292,7 @@ func (p *Poller) readIdentity(ctx context.Context, d *gmc.Device) DeviceInfo {
 	} else if v, err := gmc.ParseVersion(raw); err != nil {
 		p.log.Warn("could not parse device version", "error", err)
 	} else {
-		info.Model, info.Firmware = v.Model, v.Firmware
+		info.Model, info.Firmware, info.Version = v.Model, v.Firmware, v.Raw
 	}
 
 	if raw, err := d.Exchange(ctx, gmc.CmdGetSerial); err != nil {

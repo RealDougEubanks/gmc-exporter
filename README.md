@@ -196,6 +196,24 @@ If you see occasional `Too soon` rejections at a 60 second poll interval, raise
 `GOGMC_POLL_INTERVAL` slightly. Nothing is lost when one is skipped, and the
 Prometheus and InfluxDB sinks still record every reading.
 
+### Replacing an existing InfluxDB 1.x exporter
+
+If you already have history in InfluxDB, landing in the same series matters more
+than having tidy field names: dashboards and alerts built on the old data stop
+matching silently, with nothing reporting an error.
+
+```
+GOGMC_INFLUX1_MEASUREMENT=data        # whatever your existing measurement is
+GOGMC_INFLUX1_FIELD_STYLE=legacy      # CPM, ACPM, USV, Voltage, Temperature
+GOGMC_INFLUX1_TAG_DEVICE=true         # serial and version tags
+```
+
+The default `snake` style writes `cpm`, `acpm`, `usvh`, `volts` and `temp_c`,
+matching the Prometheus and MQTT sinks. Use it for a new database.
+
+This option is InfluxDB 1.x only, because the schema it reproduces only ever
+existed there.
+
 ### Home Assistant
 
 With `GOGMC_MQTT_HA_DISCOVERY=true`, the sensors appear automatically, grouped

@@ -36,6 +36,32 @@ type Reading struct {
 	// TemperatureC is the internal temperature in degrees Celsius. Optional:
 	// GQ-RFC1201 lists it as GMC-320 Re.3.01 or later.
 	TemperatureC Optional[float64]
+
+	// Device identifies the instrument that produced this reading.
+	//
+	// It travels with the reading rather than being handed to each sink at
+	// construction, because a sink that labels its output needs the identity
+	// at the moment it publishes, and because a reconnect can in principle
+	// find a different unit on the same port.
+	Device DeviceIdentity
+}
+
+// DeviceIdentity describes the instrument.
+//
+// Every field is optional: identity is read once per connection on a
+// best-effort basis, and a unit that would not answer <GETVER>> still produces
+// perfectly good count rates.
+type DeviceIdentity struct {
+	// Model is the hardware model, e.g. "GMC-320".
+	Model string
+	// Firmware is the firmware revision, e.g. "Re 4.62".
+	Firmware string
+	// Serial is the unit's serial number, rendered as hex.
+	Serial string
+	// Version is the full 14-byte version string as reported, e.g.
+	// "GMC-320Re 4.62". It is kept alongside the split fields because
+	// existing dashboards commonly label series with the raw string.
+	Version string
 }
 
 // Optional carries a value that may not have been read this cycle.

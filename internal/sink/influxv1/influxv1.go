@@ -52,6 +52,8 @@ const maxBackoff = 5 * time.Second
 // Sink writes readings to a single InfluxDB 1.x database.
 type Sink struct {
 	measurement string
+	fields      FieldNames
+	tagDevice   bool
 	attempts    int
 	backoff     time.Duration
 
@@ -119,8 +121,15 @@ func New(cfg config.InfluxV1, log *slog.Logger) (*Sink, error) {
 		timeout = 15 * time.Second
 	}
 
+	fields, err := FieldNamesFor(cfg.FieldStyle)
+	if err != nil {
+		return nil, fmt.Errorf("influxdb 1.x: GOGMC_INFLUX1_FIELD_STYLE: %w", err)
+	}
+
 	return &Sink{
 		measurement: measurement,
+		fields:      fields,
+		tagDevice:   cfg.TagDevice,
 		// Retries counts attempts after the first, so a configured zero still
 		// makes one attempt.
 		attempts: cfg.Retries + 1,
@@ -137,7 +146,7 @@ func (s *Sink) Name() string { return sinkName }
 
 // Publish writes one reading as a single line protocol point.
 func (s *Sink) Publish(ctx context.Context, r reading.Reading) error {
-	return s.write(ctx, lineProtocol(s.measurement, r))
+	return s.write(ctx, lineProtocol(s.measurement, s.fields, s.tagDevice, r))
 }
 
 // Close releases pooled connections. It is safe on a sink that never published.
@@ -247,26 +256,35 @@ func readSnippet(body io.Reader) string {
 // Optional values the device did not supply are omitted rather than written as
 // zero: zero volts is a dead battery and zero degrees is a cold day, so a
 // defaulted value would be indistinguishable from a real measurement.
-func lineProtocol(measurement string, r reading.Reading) string {
+func lineProtocol(measurement string, names FieldNames, tagDevice bool, r reading.Reading) string {
 	var b strings.Builder
 
 	b.WriteString(escapeMeasurement(measurement))
+
+	// Device identity is written as tags rather than fields because it
+	// labels the series rather than varying within it. Both values are
+	// single-valued for a given instrument, so this adds no cardinality.
+	if tagDevice {
+		appendTag(&b, "serial", r.Device.Serial)
+		appendTag(&b, "version", r.Device.Version)
+	}
+
 	b.WriteByte(' ')
 
 	// CPM is an integer count and is typed as one so Influx does not create a
 	// float column that later readings cannot be compared against.
-	b.WriteString(escapeTag("cpm"))
+	b.WriteString(escapeTag(names.CPM))
 	b.WriteByte('=')
 	b.WriteString(strconv.FormatUint(uint64(r.CPM), 10))
 	b.WriteByte('i')
 
-	appendFloatField(&b, "acpm", r.AverageCPM)
-	appendFloatField(&b, "usvh", r.MicroSievertsPerHour)
+	appendFloatField(&b, names.AverageCPM, r.AverageCPM)
+	appendFloatField(&b, names.MicroSieverts, r.MicroSievertsPerHour)
 	if r.Voltage.Valid {
-		appendFloatField(&b, "volts", r.Voltage.Value)
+		appendFloatField(&b, names.Voltage, r.Voltage.Value)
 	}
 	if r.TemperatureC.Valid {
-		appendFloatField(&b, "temp_c", r.TemperatureC.Value)
+		appendFloatField(&b, names.Temperature, r.TemperatureC.Value)
 	}
 
 	// A zero timestamp means nothing recorded when this reading was taken.
@@ -279,6 +297,20 @@ func lineProtocol(measurement string, r reading.Reading) string {
 	}
 
 	return b.String()
+}
+
+// appendTag writes a comma-separated tag, skipping an empty value.
+//
+// An empty tag value is not the same as an absent tag in line protocol: it is
+// a syntax error in some server versions and a distinct series in others.
+func appendTag(b *strings.Builder, key, value string) {
+	if value == "" {
+		return
+	}
+	b.WriteByte(',')
+	b.WriteString(escapeTag(key))
+	b.WriteByte('=')
+	b.WriteString(escapeTag(value))
 }
 
 // appendFloatField writes a comma-separated float field.
