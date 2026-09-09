@@ -3,6 +3,7 @@ package radmon
 import (
 	"bytes"
 	"context"
+	"errors"
 	"io"
 	"log/slog"
 	"net/http"
@@ -526,5 +527,85 @@ func TestRateLimitIsNotRetried(t *testing.T) {
 	}
 	if !strings.Contains(err.Error(), "too soon") && !strings.Contains(strings.ToLower(err.Error()), "too soon") {
 		t.Errorf("error %q should explain that the submission was too soon", err)
+	}
+}
+
+// TestRateLimitStopsFurtherRequests covers the cooldown.
+//
+// Not retrying a single rejection is not enough on its own. Observed against
+// the live service, submissions 60 and then 70 seconds apart were both refused
+// as "Too soon", so an exporter that simply tries again every poll keeps
+// generating requests the server has already said it does not want. After a
+// refusal the sink goes quiet and makes no network call at all until the
+// cooldown expires.
+func TestRateLimitStopsFurtherRequests(t *testing.T) {
+	var calls atomic.Int32
+
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		calls.Add(1)
+		_, _ = io.WriteString(w, "Too soon <br>")
+	}))
+	defer srv.Close()
+
+	s := newTestSink(t, baseConfig(), testLocation(), srv.URL,
+		slog.New(slog.NewTextHandler(io.Discard, nil)))
+
+	// The first publish reaches the server and is refused.
+	if err := s.Publish(context.Background(), testReading()); err == nil {
+		t.Fatal("expected the first submission to fail")
+	}
+	if n := calls.Load(); n != 1 {
+		t.Fatalf("first publish made %d requests, want 1", n)
+	}
+
+	// Every publish during the cooldown must be skipped locally, with no
+	// request at all.
+	for i := 0; i < 5; i++ {
+		err := s.Publish(context.Background(), testReading())
+		if !errors.Is(err, sink.ErrSkipped) {
+			t.Fatalf("publish %d during cooldown returned %v, want sink.ErrSkipped", i, err)
+		}
+	}
+	if n := calls.Load(); n != 1 {
+		t.Fatalf("server was called %d times; the cooldown must suppress requests entirely", n)
+	}
+
+	// A skip is not a failure: the fan-out counts it separately, so it must
+	// not look like an error the operator should act on.
+	if err := s.Publish(context.Background(), testReading()); !errors.Is(err, sink.ErrSkipped) {
+		t.Fatalf("got %v, want sink.ErrSkipped", err)
+	}
+}
+
+// TestCooldownBacksOffAndResets checks the cooldown grows while refusals
+// continue and clears once a submission lands.
+func TestCooldownBacksOffAndResets(t *testing.T) {
+	s := newTestSink(t, baseConfig(), testLocation(), "http://127.0.0.1:1",
+		slog.New(slog.NewTextHandler(io.Discard, nil)))
+
+	s.noteRateLimited()
+	first := s.cooldown
+	if first != minRateLimitCooldown {
+		t.Fatalf("first cooldown = %s, want %s", first, minRateLimitCooldown)
+	}
+
+	s.noteRateLimited()
+	if s.cooldown != 2*first {
+		t.Fatalf("second cooldown = %s, want %s", s.cooldown, 2*first)
+	}
+
+	// It must not grow without bound.
+	for i := 0; i < 20; i++ {
+		s.noteRateLimited()
+	}
+	if s.cooldown > maxRateLimitCooldown {
+		t.Fatalf("cooldown grew to %s, above the %s cap", s.cooldown, maxRateLimitCooldown)
+	}
+
+	// A successful submission clears it, so one bad patch does not suppress
+	// the sink forever.
+	s.noteAccepted()
+	if _, cooling := s.coolingDown(); cooling {
+		t.Fatal("a successful submission should clear the cooldown")
 	}
 }

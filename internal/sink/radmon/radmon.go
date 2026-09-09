@@ -27,11 +27,13 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/RealDougEubanks/gmc-exporter/internal/config"
 	"github.com/RealDougEubanks/gmc-exporter/internal/reading"
 	"github.com/RealDougEubanks/gmc-exporter/internal/redact"
+	"github.com/RealDougEubanks/gmc-exporter/internal/sink"
 )
 
 const (
@@ -82,6 +84,12 @@ type Sink struct {
 	retries   int
 	client    *http.Client
 	log       *slog.Logger
+
+	// mu guards the rate-limit cooldown. Publish is called from the sink
+	// fan-out, which runs every sink concurrently, so this state is shared.
+	mu            sync.Mutex
+	cooldown      time.Duration
+	cooldownUntil time.Time
 }
 
 // errPermanent marks a failure that retrying cannot fix. Bad credentials are
@@ -89,6 +97,11 @@ type Sink struct {
 // repeating it against a small volunteer-run server is abuse rather than
 // resilience.
 var errPermanent = errors.New("radmon: permanent failure")
+
+// errRateLimited marks radmon.org refusing a submission as too frequent. It is
+// permanent for this reading and additionally triggers a cooldown, so the sink
+// stops generating traffic the server has said it does not want.
+var errRateLimited = errors.New("radmon: rate limited")
 
 // New builds a sink from validated configuration.
 //
@@ -143,6 +156,14 @@ func (s *Sink) Name() string { return "radmon" }
 // deliberately dropped rather than approximated into a field that means
 // something else.
 func (s *Sink) Publish(ctx context.Context, r reading.Reading) error {
+	if remaining, cooling := s.coolingDown(); cooling {
+		// Skip without touching the network. The server has already said it
+		// does not want this data yet, so sending anyway would be a request
+		// made in the certain knowledge it will be refused.
+		return fmt.Errorf("%w: rate limited, next attempt in %s",
+			sink.ErrSkipped, remaining.Round(time.Second))
+	}
+
 	fn := functionSubmit
 	params := url.Values{
 		"value": {strconv.FormatUint(uint64(r.CPM), 10)},
@@ -154,7 +175,67 @@ func (s *Sink) Publish(ctx context.Context, r reading.Reading) error {
 		params.Set("longitude", strconv.FormatFloat(s.longitude, 'f', -1, 64))
 	}
 
-	return s.call(ctx, fn, params, responseOK)
+	err := s.call(ctx, fn, params, responseOK)
+	switch {
+	case err == nil:
+		s.noteAccepted()
+	case errors.Is(err, errRateLimited):
+		s.noteRateLimited()
+	}
+	return err
+}
+
+// Rate-limit cooldown bounds.
+//
+// radmon.org documents no submission interval, and the API thread does not
+// mention one, so the limit has to be discovered at runtime rather than
+// configured. Starting at one poll interval's worth and doubling finds a
+// workable cadence within a few attempts, and the cap stops a prolonged
+// rejection from silencing the sink for hours.
+const (
+	minRateLimitCooldown = 60 * time.Second
+	maxRateLimitCooldown = 15 * time.Minute
+)
+
+// coolingDown reports whether submissions are currently suppressed.
+func (s *Sink) coolingDown() (time.Duration, bool) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	if s.cooldownUntil.IsZero() {
+		return 0, false
+	}
+	remaining := time.Until(s.cooldownUntil)
+	if remaining <= 0 {
+		return 0, false
+	}
+	return remaining, true
+}
+
+// noteRateLimited extends the cooldown after a refusal.
+func (s *Sink) noteRateLimited() {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	if s.cooldown < minRateLimitCooldown {
+		s.cooldown = minRateLimitCooldown
+	} else {
+		s.cooldown *= 2
+		if s.cooldown > maxRateLimitCooldown {
+			s.cooldown = maxRateLimitCooldown
+		}
+	}
+	s.cooldownUntil = time.Now().Add(s.cooldown)
+	s.log.Warn("radmon.org refused a submission as too soon; pausing this sink",
+		"cooldown", s.cooldown)
+}
+
+// noteAccepted clears the cooldown after a submission lands.
+func (s *Sink) noteAccepted() {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.cooldown = 0
+	s.cooldownUntil = time.Time{}
 }
 
 // Ping checks connectivity and reachability without submitting a reading.
@@ -202,7 +283,10 @@ func (s *Sink) call(ctx context.Context, fn string, params url.Values, want stri
 
 		// A permanent failure is returned immediately: retrying bad
 		// credentials cannot succeed and only adds load.
-		if errors.Is(err, errPermanent) {
+		// A rate limit is as unretryable as a bad password: the server has
+		// said "not yet", and asking again immediately is three refusals
+		// instead of one.
+		if errors.Is(err, errPermanent) || errors.Is(err, errRateLimited) {
 			return err
 		}
 		if attempt == attempts {
@@ -283,7 +367,7 @@ func (s *Sink) attempt(ctx context.Context, fn string, params url.Values, want s
 		}
 		if looksLikeRateLimit(text) {
 			return fmt.Errorf("%w: submitted too soon after the previous reading, "+
-				"this reading is skipped: %s", errPermanent, s.excerpt(text))
+				"this reading is skipped: %s", errRateLimited, s.excerpt(text))
 		}
 		return fmt.Errorf("unexpected response body, wanted %q: %s", want, s.excerpt(text))
 	}
