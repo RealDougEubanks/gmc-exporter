@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"math"
 	"sort"
+	"strconv"
+	"strings"
 )
 
 // Calibration layout inside the 256-byte <GETCFG>> block.
@@ -133,6 +135,60 @@ func (c Calibration) MicroSievertsPerHour(cpm float64) float64 {
 	}
 	slope := (last.MicroSievertsPerHour - prev.MicroSievertsPerHour) / span
 	return last.MicroSievertsPerHour + (cpm-float64(last.CPM))*slope
+}
+
+// ParseCalibrationSpec builds a calibration table from a configuration string
+// of comma-separated "cpm:usv" pairs, for example "60:0.39,240:1.56,1000:6.5".
+//
+// This exists because the layout of the configuration block is measured rather
+// than specified. A unit whose firmware stores the table elsewhere, or a user
+// who has calibrated against a reference source, can override it without
+// waiting for a code change.
+func ParseCalibrationSpec(spec string) (Calibration, error) {
+	spec = strings.TrimSpace(spec)
+	if spec == "" {
+		return Calibration{}, fmt.Errorf("gmc: calibration spec is empty")
+	}
+
+	var points []CalibrationPoint
+	for _, pair := range strings.Split(spec, ",") {
+		pair = strings.TrimSpace(pair)
+		if pair == "" {
+			continue
+		}
+
+		cpmText, usvText, found := strings.Cut(pair, ":")
+		if !found {
+			return Calibration{}, fmt.Errorf(
+				"gmc: calibration entry %q is not in cpm:usv form", pair)
+		}
+
+		cpm, err := strconv.ParseUint(strings.TrimSpace(cpmText), 10, 16)
+		if err != nil {
+			return Calibration{}, fmt.Errorf(
+				"gmc: calibration entry %q: %q is not a CPM value between 0 and 65535", pair, cpmText)
+		}
+		usv, err := strconv.ParseFloat(strings.TrimSpace(usvText), 64)
+		if err != nil {
+			return Calibration{}, fmt.Errorf(
+				"gmc: calibration entry %q: %q is not a number", pair, usvText)
+		}
+		if cpm == 0 {
+			return Calibration{}, fmt.Errorf("gmc: calibration entry %q has a CPM of zero", pair)
+		}
+		if usv <= 0 || math.IsNaN(usv) || math.IsInf(usv, 0) {
+			return Calibration{}, fmt.Errorf(
+				"gmc: calibration entry %q has a non-positive dose rate", pair)
+		}
+		points = append(points, CalibrationPoint{CPM: uint16(cpm), MicroSievertsPerHour: usv})
+	}
+
+	if len(points) == 0 {
+		return Calibration{}, fmt.Errorf("gmc: calibration spec %q contained no entries", spec)
+	}
+
+	sort.Slice(points, func(i, j int) bool { return points[i].CPM < points[j].CPM })
+	return Calibration{Points: points}, nil
 }
 
 // String renders the table for the startup log, so the calibration actually in

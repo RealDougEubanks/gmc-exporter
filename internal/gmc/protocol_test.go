@@ -46,8 +46,8 @@ func TestExchangeReplaysEveryCapturedIteration(t *testing.T) {
 
 				got, err := dev.Exchange(context.Background(), cmd)
 
-				switch {
-				case it.TotalBytes == cmd.ResponseBytes:
+				switch it.TotalBytes {
+				case cmd.ResponseBytes:
 					if err != nil {
 						t.Fatalf("%s %s iteration %d: unexpected error: %v",
 							path, recorded.Name, it.Index, err)
@@ -58,7 +58,7 @@ func TestExchangeReplaysEveryCapturedIteration(t *testing.T) {
 					}
 					replayed++
 
-				case it.TotalBytes == 0:
+				case 0:
 					// The device sent nothing at all. Measured on real
 					// hardware; must be a clean error, never a panic.
 					if !errors.Is(err, ErrNoResponse) {
