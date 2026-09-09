@@ -3,6 +3,7 @@ package gmc
 import (
 	"encoding/binary"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"strings"
 	"time"
@@ -56,8 +57,59 @@ func ParseVoltage(b []byte) (float64, error) {
 	if err := checkLength(CmdGetVoltage.Name, b, CmdGetVoltage.ResponseBytes); err != nil {
 		return 0, err
 	}
-	return float64(b[0]) / 10.0, nil
+
+	volts := float64(b[0]) / 10.0
+
+	// A one-byte reply carries no terminator and no checksum, so a flipped
+	// bit is undetectable structurally: 0x2A (4.2V) becomes 0x6A (10.6V) and
+	// looks perfectly valid. The range below spans every battery arrangement
+	// this hardware family uses, from a single lithium cell to the 9V pack in
+	// the specification's own example, so it rejects corruption without
+	// rejecting a legitimately flat or freshly charged battery.
+	if volts < minPlausibleVolts || volts > maxPlausibleVolts {
+		return 0, fmt.Errorf("gmc: %s: decoded %.1f V from 0x%02x, outside the plausible range %.1f..%.1f: %w",
+			CmdGetVoltage.Name, volts, b[0], minPlausibleVolts, maxPlausibleVolts, ErrImplausibleValue)
+	}
+	return volts, nil
 }
+
+// Plausibility bounds for a decoded battery voltage. See ParseVoltage.
+const (
+	minPlausibleVolts = 0.5
+	maxPlausibleVolts = 15.0
+)
+
+// Plausibility bounds for a decoded temperature.
+//
+// These exist because structural validation is not sufficient. The serial link
+// runs at 115200 8N1 with no parity, so a single flipped bit corrupts a byte
+// silently, and a corrupted temperature reply still has the right length and
+// the right 0xAA terminator.
+//
+// This was observed in operation, not theorised. Against a device that had
+// reported 30.8 C on three consecutive polls, one poll returned 94.8 C:
+//
+//	expected  1e 08 00 aa   ->  30.8 C
+//	received  5e 08 00 aa   ->  94.8 C
+//
+// 0x1E against 0x5E is one bit. Across 418 captured replies the integer byte
+// was 0x1F every single time, so this was line noise rather than a real
+// reading. Publishing it would have put a fabricated 94.8 C into the user's
+// monitoring history.
+//
+// The range is deliberately generous: it spans what a semiconductor sensor in
+// a handheld instrument could physically report, so it rejects corruption
+// without second-guessing a genuine extreme. GQ-RFC1201 documents no range, so
+// this is a plausibility limit rather than a specified one.
+const (
+	minPlausibleCelsius = -40.0
+	maxPlausibleCelsius = 85.0
+)
+
+// ErrImplausibleValue means a response decoded cleanly but produced a value
+// outside what the hardware can physically report, which indicates corruption
+// that structural checks cannot catch.
+var ErrImplausibleValue = errors.New("gmc: decoded value is outside the plausible range")
 
 // ParseTemperature decodes a <GETTEMP>> reply into degrees Celsius.
 //
@@ -72,9 +124,21 @@ func ParseTemperature(b []byte) (float64, error) {
 		return 0, err
 	}
 
+	// The decimal part is one digit by definition, so anything above 9 is
+	// corruption rather than a tenth of a degree.
+	if b[1] > 9 {
+		return 0, fmt.Errorf("gmc: %s: decimal byte is %d, which is not a single digit: %w",
+			CmdGetTemperature.Name, b[1], ErrImplausibleValue)
+	}
+
 	celsius := float64(b[0]) + float64(b[1])/10.0
 	if b[2] != 0 {
 		celsius = -celsius
+	}
+
+	if celsius < minPlausibleCelsius || celsius > maxPlausibleCelsius {
+		return 0, fmt.Errorf("gmc: %s: decoded %.1f C from % x, outside the plausible range %.0f..%.0f: %w",
+			CmdGetTemperature.Name, celsius, b, minPlausibleCelsius, maxPlausibleCelsius, ErrImplausibleValue)
 	}
 	return celsius, nil
 }
