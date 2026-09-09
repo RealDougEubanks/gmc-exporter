@@ -182,6 +182,20 @@ logging a transport failure writes the password to disk. Every transport error
 in this project is redacted before it can be logged, and there are tests
 asserting no credential reaches log output.
 
+**On submission rate.** radmon.org rejects submissions that arrive too close
+together, answering HTTP 200 with a body of `Too soon`. That is a success status
+carrying a failure, so an implementation that only checks the status code will
+report every one of those as a successful submission.
+
+A rejected submission is never retried. Retrying cannot succeed — the server is
+saying "not yet" — and each attempt restarts the interval, so retries turn one
+rejection into a permanent loop where every subsequent poll is also too soon.
+The reading is dropped and the next poll submits on schedule.
+
+If you see occasional `Too soon` rejections at a 60 second poll interval, raise
+`GOGMC_POLL_INTERVAL` slightly. Nothing is lost when one is skipped, and the
+Prometheus and InfluxDB sinks still record every reading.
+
 ### Home Assistant
 
 With `GOGMC_MQTT_HA_DISCOVERY=true`, the sensors appear automatically, grouped
