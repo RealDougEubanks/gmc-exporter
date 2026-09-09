@@ -2,7 +2,7 @@
 
 # Build stage. The toolchain never reaches the final image, which is the
 # difference between a ~1GB container and a ~10MB one.
-FROM --platform=$BUILDPLATFORM golang:1.25-alpine AS build
+FROM --platform=$BUILDPLATFORM golang:1.27-alpine AS build
 
 WORKDIR /src
 
