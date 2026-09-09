@@ -2,6 +2,7 @@ package gmc
 
 import (
 	"errors"
+	"math"
 	"testing"
 	"time"
 )
@@ -346,6 +347,50 @@ func TestParseCalibrationSpec(t *testing.T) {
 	} {
 		if _, err := ParseCalibrationSpec(bad); err == nil {
 			t.Errorf("ParseCalibrationSpec(%q) was accepted", bad)
+		}
+	}
+}
+
+// TestDoseRateIsNotSpuriouslyPrecise pins the rounding of float32 artefacts.
+//
+// The device stores calibration as float32, so 0.39 is really
+// 0.3899999856948853 and 23 CPM previously converted to
+// 0.14949999451637266. That number was published verbatim to InfluxDB and to
+// Safecast's permanent public archive, implying seventeen significant figures
+// from an integer count and a two-figure calibration constant.
+func TestDoseRateIsNotSpuriouslyPrecise(t *testing.T) {
+	t.Parallel()
+
+	// Exactly the table this GMC-320 reports, float32 artefacts included.
+	cal := Calibration{Points: []CalibrationPoint{
+		{CPM: 60, MicroSievertsPerHour: float64(float32(0.39))},
+		{CPM: 240, MicroSievertsPerHour: float64(float32(1.56))},
+		{CPM: 1000, MicroSievertsPerHour: float64(float32(6.5))},
+	}}
+
+	tests := []struct {
+		cpm  float64
+		want float64
+	}{
+		{cpm: 23, want: 0.1495}, // the reading that exposed this
+		{cpm: 28, want: 0.182},  // 28 x 0.0065
+		{cpm: 16, want: 0.104},
+		{cpm: 150, want: 0.975}, // interpolated between points
+		{cpm: 2000, want: 13.0}, // extrapolated above the table
+	}
+
+	for _, tc := range tests {
+		got := cal.MicroSievertsPerHour(tc.cpm)
+		if got != tc.want {
+			t.Errorf("MicroSievertsPerHour(%v) = %v, want exactly %v", tc.cpm, got, tc.want)
+		}
+	}
+
+	// Nothing should carry more than six decimals.
+	for cpm := 1.0; cpm <= 300; cpm++ {
+		got := cal.MicroSievertsPerHour(cpm)
+		if r := math.Round(got*1e6) / 1e6; r != got {
+			t.Fatalf("MicroSievertsPerHour(%v) = %v, which has more than 6 decimals", cpm, got)
 		}
 	}
 }
