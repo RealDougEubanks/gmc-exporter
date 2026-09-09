@@ -609,3 +609,117 @@ func TestCooldownBacksOffAndResets(t *testing.T) {
 		t.Fatal("a successful submission should clear the cooldown")
 	}
 }
+
+// TestSuccessBodyCarriesHTML pins the exact success response the live service
+// returns.
+//
+// The API thread documents this as "OK". The wire carries "OK<br>". Comparing
+// against the documented string alone rejects every successful submission,
+// which fails in the worst direction available: the sink reports failure while
+// the data is actually arriving, so nothing an operator investigates will
+// explain it.
+func TestSuccessBodyCarriesHTML(t *testing.T) {
+	t.Parallel()
+
+	for _, body := range []string{
+		"OK<br>",  // exactly what radmon.org returned on a live submission
+		"OK",      // what the API thread documents
+		"OK<br/>", // defensive: same tag, other spellings
+		"OK <br />",
+		"ok<br>", // the comparison is case-insensitive
+		"OK\n",
+	} {
+		t.Run(body, func(t *testing.T) {
+			t.Parallel()
+
+			srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+				_, _ = io.WriteString(w, body)
+			}))
+			defer srv.Close()
+
+			s := newTestSink(t, baseConfig(), testLocation(), srv.URL,
+				slog.New(slog.NewTextHandler(io.Discard, nil)))
+
+			if err := s.Publish(context.Background(), testReading()); err != nil {
+				t.Fatalf("body %q was rejected: %v", body, err)
+			}
+		})
+	}
+}
+
+// TestNonSuccessBodiesStillRejected guards the fix above from becoming a
+// prefix match, which would accept sentences that merely start with OK.
+func TestNonSuccessBodiesStillRejected(t *testing.T) {
+	t.Parallel()
+
+	for _, body := range []string{
+		"Too soon <br>",
+		"Incorrect.<br>",
+		"There is no user by that name, please register.",
+		"OK, but actually something went wrong",
+		"NOT OK<br>",
+		"",
+	} {
+		t.Run(body, func(t *testing.T) {
+			t.Parallel()
+
+			srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+				_, _ = io.WriteString(w, body)
+			}))
+			defer srv.Close()
+
+			cfg := baseConfig()
+			cfg.Retries = 0
+			s := newTestSink(t, cfg, testLocation(), srv.URL,
+				slog.New(slog.NewTextHandler(io.Discard, nil)))
+
+			if err := s.Publish(context.Background(), testReading()); err == nil {
+				t.Fatalf("body %q was accepted as a success", body)
+			}
+		})
+	}
+}
+
+// TestObservedAuthFailuresAreNotRetried pins the exact rejection strings the
+// live service returns for bad credentials.
+//
+// Both were captured against radmon.org: a wrong password answers
+// "Incorrect.<br>" and an unknown account answers "There is no user by that
+// name, please register." Neither matched the original phrase list, so a
+// misconfigured password would have been retried against a volunteer-run
+// server on every poll, forever.
+func TestObservedAuthFailuresAreNotRetried(t *testing.T) {
+	t.Parallel()
+
+	for name, body := range map[string]string{
+		"wrong password": "Incorrect.<br>",
+		"unknown user":   "There is no user by that name, please register.",
+	} {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			var calls atomic.Int32
+			srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+				calls.Add(1)
+				_, _ = io.WriteString(w, body)
+			}))
+			defer srv.Close()
+
+			cfg := baseConfig()
+			cfg.Retries = 3
+			s := newTestSink(t, cfg, testLocation(), srv.URL,
+				slog.New(slog.NewTextHandler(io.Discard, nil)))
+
+			err := s.Publish(context.Background(), testReading())
+			if err == nil {
+				t.Fatal("a credential rejection should be a failure")
+			}
+			if n := calls.Load(); n != 1 {
+				t.Errorf("server called %d times, want 1: credentials that are wrong stay wrong", n)
+			}
+			if !strings.Contains(strings.ToLower(err.Error()), "password") {
+				t.Errorf("error %q should point at the credential", err)
+			}
+		})
+	}
+}

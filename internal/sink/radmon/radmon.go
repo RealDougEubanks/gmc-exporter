@@ -360,7 +360,7 @@ func (s *Sink) attempt(ctx context.Context, fn string, params url.Values, want s
 
 	// radmon.org answers credential and validation errors with 200 and an
 	// error sentence in the body, so the status code alone proves nothing.
-	if !strings.EqualFold(text, want) {
+	if !strings.EqualFold(normalizeBody(text), want) {
 		if looksLikeAuthFailure(text) {
 			return fmt.Errorf("%w: rejected, check the radmon data-sending password: %s",
 				errPermanent, s.excerpt(text))
@@ -402,6 +402,25 @@ func looksLikeRateLimit(body string) bool {
 	return false
 }
 
+// normalizeBody strips the HTML the endpoint wraps its answers in.
+//
+// The API thread documents the success response as "OK", but the wire carries
+// "OK<br>". Comparing against the documented string alone therefore rejects
+// every successful submission, which is a particularly nasty failure: the sink
+// reports permanent failure while the data is in fact arriving, so an operator
+// chasing the error would never find a cause.
+//
+// The tag is stripped rather than the comparison loosened to a prefix match,
+// because "OK" is a prefix of plenty of sentences that are not successes.
+func normalizeBody(body string) string {
+	replacer := strings.NewReplacer(
+		"<br>", "", "<BR>", "",
+		"<br/>", "", "<BR/>", "",
+		"<br />", "", "<BR />", "",
+	)
+	return strings.TrimSpace(replacer.Replace(body))
+}
+
 // looksLikeAuthFailure reports whether a 200 body is radmon.org refusing the
 // credentials.
 //
@@ -410,16 +429,21 @@ func looksLikeRateLimit(body string) bool {
 // costs a few pointless retries; the check exists to stop the common case of an
 // exporter hammering the endpoint with a password that will never work.
 func looksLikeAuthFailure(body string) bool {
-	lower := strings.ToLower(body)
+	lower := strings.ToLower(normalizeBody(body))
 	for _, phrase := range []string{
-		"incorrect login",
-		"incorrect password",
-		"wrong password",
-		"bad password",
+		// Observed from the live service: a wrong data-sending password
+		// answers "Incorrect.", and an unknown account answers "There is no
+		// user by that name, please register."
+		"incorrect",
+		"no user by that name",
+		"please register",
+
+		// Wordings not observed but cheap to cover, since the thread
+		// documents no failure strings at all and the cost of a miss is a
+		// few pointless retries against a volunteer-run server.
 		"invalid password",
 		"invalid user",
 		"unknown user",
-		"no such user",
 		"login failed",
 		"access denied",
 		"not authorised",
