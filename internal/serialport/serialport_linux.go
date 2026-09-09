@@ -3,6 +3,7 @@
 package serialport
 
 import (
+	"errors"
 	"fmt"
 	"sync"
 	"time"
@@ -102,7 +103,7 @@ func (p *devicePort) Read(b []byte) (int, error) {
 		fds := []unix.PollFd{{Fd: int32(fd), Events: unix.POLLIN}}
 		n, err := unix.Poll(fds, int(remaining.Milliseconds())+1)
 		if err != nil {
-			if err == unix.EINTR {
+			if errors.Is(err, unix.EINTR) {
 				continue
 			}
 			return 0, fmt.Errorf("serialport: poll: %w", err)
@@ -119,7 +120,7 @@ func (p *devicePort) Read(b []byte) (int, error) {
 
 		got, err := unix.Read(fd, b)
 		if err != nil {
-			if err == unix.EAGAIN || err == unix.EINTR {
+			if errors.Is(err, unix.EAGAIN) || errors.Is(err, unix.EINTR) {
 				continue
 			}
 			return 0, fmt.Errorf("serialport: read: %w", err)
@@ -149,12 +150,12 @@ func (p *devicePort) Write(b []byte) (int, error) {
 
 		n, err := unix.Write(fd, b[written:])
 		if err != nil {
-			if err == unix.EINTR {
+			if errors.Is(err, unix.EINTR) {
 				continue
 			}
-			if err == unix.EAGAIN {
+			if errors.Is(err, unix.EAGAIN) {
 				fds := []unix.PollFd{{Fd: int32(fd), Events: unix.POLLOUT}}
-				if _, perr := unix.Poll(fds, 100); perr != nil && perr != unix.EINTR {
+				if _, perr := unix.Poll(fds, 100); perr != nil && !errors.Is(perr, unix.EINTR) {
 					return written, fmt.Errorf("serialport: poll for write: %w", perr)
 				}
 				continue

@@ -158,13 +158,17 @@ type MQTT struct {
 	Port    int
 	TLS     bool
 	CACert  string
-	ClientCert
-	Username  string
-	Password  redact.Secret
-	ClientID  string
-	QoS       int
-	BaseTopic string
-	Retain    bool
+	// ClientCert is a named field rather than an embedded one. Embedding
+	// would promote CertFile and KeyFile onto MQTT itself, which reads as
+	// though they belong to the broker connection generally rather than to
+	// the client certificate specifically.
+	ClientCert ClientCert
+	Username   string
+	Password   redact.Secret
+	ClientID   string
+	QoS        int
+	BaseTopic  string
+	Retain     bool
 
 	// HADiscovery publishes Home Assistant discovery messages so the sensors
 	// appear without manual configuration.

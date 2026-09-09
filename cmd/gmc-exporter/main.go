@@ -69,7 +69,7 @@ func parseArgs(args []string, out io.Writer) (proceed bool, code int) {
 	showVersion := fs.Bool("version", false, "print version information and exit")
 
 	fs.Usage = func() {
-		fmt.Fprintf(out, "gmc-exporter reads a GQ Electronics GMC-series Geiger counter\n"+
+		_, _ = fmt.Fprintf(out, "gmc-exporter reads a GQ Electronics GMC-series Geiger counter\n"+
 			"and publishes its readings to the configured backends.\n\n"+
 			"It is configured entirely by environment variables, all prefixed %s.\n"+
 			"See https://github.com/RealDougEubanks/gmc-exporter for the full list.\n\n"+
@@ -81,12 +81,12 @@ func parseArgs(args []string, out io.Writer) (proceed bool, code int) {
 		return false, exitFailure
 	}
 	if *showVersion {
-		fmt.Fprintf(out, "gmc-exporter %s (commit %s, built %s, %s)\n",
+		_, _ = fmt.Fprintf(out, "gmc-exporter %s (commit %s, built %s, %s)\n",
 			version, commit, buildDate, runtime.Version())
 		return false, exitOK
 	}
 	if fs.NArg() > 0 {
-		fmt.Fprintf(out, "gmc-exporter: unexpected argument %q; this program takes no positional arguments "+
+		_, _ = fmt.Fprintf(out, "gmc-exporter: unexpected argument %q; this program takes no positional arguments "+
 			"and is configured through %s environment variables\n", fs.Arg(0), config.EnvPrefix)
 		return false, exitFailure
 	}

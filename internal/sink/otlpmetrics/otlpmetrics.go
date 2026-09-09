@@ -122,7 +122,7 @@ func New(cfg config.OTLP, version string) (*Sink, error) {
 	if err := s.registerInstruments(); err != nil {
 		// The provider owns the exporter, so shut it down rather than leaking
 		// its goroutine and connection.
-		s.shutdown()
+		_ = s.shutdown()
 		return nil, err
 	}
 
