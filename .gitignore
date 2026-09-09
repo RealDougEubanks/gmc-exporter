@@ -1,0 +1,29 @@
+# Build output
+/gmc-exporter
+/gmc-probe
+/dist/
+/bin/
+
+# Real configuration and secrets. Only *.example files belong in the repo.
+.env
+*.env
+!.env.example
+config.ini
+!config.ini.example
+*.pem
+*.key
+
+# Local capture scratch space. Captures promoted to fixtures live under
+# internal/gmc/testdata/captures/ and are committed deliberately.
+/captures/
+capture-*.json
+
+# Go tooling
+*.test
+*.out
+coverage.txt
+
+# Editors and OS
+.DS_Store
+.idea/
+.vscode/

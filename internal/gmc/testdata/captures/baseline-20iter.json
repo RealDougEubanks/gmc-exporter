@@ -1,0 +1,3097 @@
+{
+  "tool": "gmc-probe",
+  "device": "/dev/ttyUSB0",
+  "baud": 115200,
+  "host": "unRAID",
+  "startedAt": "2026-09-09T00:11:14Z",
+  "iterationsPerCommand": 20,
+  "interCommandSettleMillis": 120,
+  "quietPeriodMillis": 300,
+  "perReadTimeoutMillis": 250,
+  "commands": [
+    {
+      "name": "GETVER",
+      "command": "\u003cGETVER\u003e\u003e",
+      "specBytes": 14,
+      "specSection": "1",
+      "iterations": [
+        {
+          "index": 0,
+          "chunks": [
+            {
+              "atMicros": 7055,
+              "n": 14,
+              "hex": "474d432d333230526520342e3632"
+            }
+          ],
+          "totalBytes": 14,
+          "elapsedMicros": 507621,
+          "hex": "474d432d333230526520342e3632",
+          "ascii": "GMC-320Re 4.62"
+        },
+        {
+          "index": 1,
+          "chunks": [
+            {
+              "atMicros": 7034,
+              "n": 14,
+              "hex": "474d432d333230526520342e3632"
+            }
+          ],
+          "totalBytes": 14,
+          "elapsedMicros": 507423,
+          "hex": "474d432d333230526520342e3632",
+          "ascii": "GMC-320Re 4.62"
+        },
+        {
+          "index": 2,
+          "chunks": [
+            {
+              "atMicros": 6994,
+              "n": 14,
+              "hex": "474d432d333230526520342e3632"
+            }
+          ],
+          "totalBytes": 14,
+          "elapsedMicros": 507479,
+          "hex": "474d432d333230526520342e3632",
+          "ascii": "GMC-320Re 4.62"
+        },
+        {
+          "index": 3,
+          "chunks": [
+            {
+              "atMicros": 7058,
+              "n": 14,
+              "hex": "474d432d333230526520342e3632"
+            }
+          ],
+          "totalBytes": 14,
+          "elapsedMicros": 507571,
+          "hex": "474d432d333230526520342e3632",
+          "ascii": "GMC-320Re 4.62"
+        },
+        {
+          "index": 4,
+          "chunks": [
+            {
+              "atMicros": 45554,
+              "n": 14,
+              "hex": "474d432d333230526520342e3632"
+            }
+          ],
+          "totalBytes": 14,
+          "elapsedMicros": 546086,
+          "hex": "474d432d333230526520342e3632",
+          "ascii": "GMC-320Re 4.62"
+        },
+        {
+          "index": 5,
+          "chunks": [
+            {
+              "atMicros": 6995,
+              "n": 14,
+              "hex": "474d432d333230526520342e3632"
+            }
+          ],
+          "totalBytes": 14,
+          "elapsedMicros": 507088,
+          "hex": "474d432d333230526520342e3632",
+          "ascii": "GMC-320Re 4.62"
+        },
+        {
+          "index": 6,
+          "chunks": [
+            {
+              "atMicros": 14906,
+              "n": 14,
+              "hex": "474d432d333230526520342e3632"
+            }
+          ],
+          "totalBytes": 14,
+          "elapsedMicros": 515369,
+          "hex": "474d432d333230526520342e3632",
+          "ascii": "GMC-320Re 4.62"
+        },
+        {
+          "index": 7,
+          "chunks": [
+            {
+              "atMicros": 122003,
+              "n": 14,
+              "hex": "474d432d333230526520342e3632"
+            }
+          ],
+          "totalBytes": 14,
+          "elapsedMicros": 622369,
+          "hex": "474d432d333230526520342e3632",
+          "ascii": "GMC-320Re 4.62"
+        },
+        {
+          "index": 8,
+          "chunks": [
+            {
+              "atMicros": 7039,
+              "n": 14,
+              "hex": "474d432d333230526520342e3632"
+            }
+          ],
+          "totalBytes": 14,
+          "elapsedMicros": 507360,
+          "hex": "474d432d333230526520342e3632",
+          "ascii": "GMC-320Re 4.62"
+        },
+        {
+          "index": 9,
+          "chunks": [
+            {
+              "atMicros": 23625,
+              "n": 14,
+              "hex": "474d432d333230526520342e3632"
+            }
+          ],
+          "totalBytes": 14,
+          "elapsedMicros": 524117,
+          "hex": "474d432d333230526520342e3632",
+          "ascii": "GMC-320Re 4.62"
+        },
+        {
+          "index": 10,
+          "chunks": [
+            {
+              "atMicros": 122147,
+              "n": 14,
+              "hex": "474d432d333230526520342e3632"
+            }
+          ],
+          "totalBytes": 14,
+          "elapsedMicros": 622718,
+          "hex": "474d432d333230526520342e3632",
+          "ascii": "GMC-320Re 4.62"
+        },
+        {
+          "index": 11,
+          "chunks": [
+            {
+              "atMicros": 6998,
+              "n": 14,
+              "hex": "474d432d333230526520342e3632"
+            }
+          ],
+          "totalBytes": 14,
+          "elapsedMicros": 507490,
+          "hex": "474d432d333230526520342e3632",
+          "ascii": "GMC-320Re 4.62"
+        },
+        {
+          "index": 12,
+          "chunks": [
+            {
+              "atMicros": 14283,
+              "n": 14,
+              "hex": "474d432d333230526520342e3632"
+            }
+          ],
+          "totalBytes": 14,
+          "elapsedMicros": 514654,
+          "hex": "474d432d333230526520342e3632",
+          "ascii": "GMC-320Re 4.62"
+        },
+        {
+          "index": 13,
+          "chunks": [
+            {
+              "atMicros": 129370,
+              "n": 14,
+              "hex": "474d432d333230526520342e3632"
+            }
+          ],
+          "totalBytes": 14,
+          "elapsedMicros": 629825,
+          "hex": "474d432d333230526520342e3632",
+          "ascii": "GMC-320Re 4.62"
+        },
+        {
+          "index": 14,
+          "chunks": [
+            {
+              "atMicros": 6990,
+              "n": 14,
+              "hex": "474d432d333230526520342e3632"
+            }
+          ],
+          "totalBytes": 14,
+          "elapsedMicros": 507555,
+          "hex": "474d432d333230526520342e3632",
+          "ascii": "GMC-320Re 4.62"
+        },
+        {
+          "index": 15,
+          "chunks": [
+            {
+              "atMicros": 15863,
+              "n": 14,
+              "hex": "474d432d333230526520342e3632"
+            }
+          ],
+          "totalBytes": 14,
+          "elapsedMicros": 516293,
+          "hex": "474d432d333230526520342e3632",
+          "ascii": "GMC-320Re 4.62"
+        },
+        {
+          "index": 16,
+          "chunks": [
+            {
+              "atMicros": 122283,
+              "n": 14,
+              "hex": "474d432d333230526520342e3632"
+            }
+          ],
+          "totalBytes": 14,
+          "elapsedMicros": 622881,
+          "hex": "474d432d333230526520342e3632",
+          "ascii": "GMC-320Re 4.62"
+        },
+        {
+          "index": 17,
+          "chunks": [
+            {
+              "atMicros": 7031,
+              "n": 14,
+              "hex": "474d432d333230526520342e3632"
+            }
+          ],
+          "totalBytes": 14,
+          "elapsedMicros": 507606,
+          "hex": "474d432d333230526520342e3632",
+          "ascii": "GMC-320Re 4.62"
+        },
+        {
+          "index": 18,
+          "chunks": [
+            {
+              "atMicros": 14259,
+              "n": 14,
+              "hex": "474d432d333230526520342e3632"
+            }
+          ],
+          "totalBytes": 14,
+          "elapsedMicros": 514819,
+          "hex": "474d432d333230526520342e3632",
+          "ascii": "GMC-320Re 4.62"
+        },
+        {
+          "index": 19,
+          "chunks": [
+            {
+              "atMicros": 122225,
+              "n": 14,
+              "hex": "474d432d333230526520342e3632"
+            }
+          ],
+          "totalBytes": 14,
+          "elapsedMicros": 622789,
+          "hex": "474d432d333230526520342e3632",
+          "ascii": "GMC-320Re 4.62"
+        }
+      ],
+      "minBytes": 14,
+      "maxBytes": 14,
+      "lengthCounts": {
+        "14": 20
+      },
+      "chunkCounts": {
+        "1": 20
+      },
+      "splitReadCount": 0,
+      "matchesSpec": true
+    },
+    {
+      "name": "GETCPM",
+      "command": "\u003cGETCPM\u003e\u003e",
+      "specBytes": 2,
+      "specSection": "2",
+      "iterations": [
+        {
+          "index": 0,
+          "chunks": [
+            {
+              "atMicros": 3190,
+              "n": 2,
+              "hex": "0010"
+            }
+          ],
+          "totalBytes": 2,
+          "elapsedMicros": 503410,
+          "hex": "0010",
+          "ascii": ".."
+        },
+        {
+          "index": 1,
+          "chunks": [
+            {
+              "atMicros": 14711,
+              "n": 2,
+              "hex": "0011"
+            }
+          ],
+          "totalBytes": 2,
+          "elapsedMicros": 515268,
+          "hex": "0011",
+          "ascii": ".."
+        },
+        {
+          "index": 2,
+          "chunks": [
+            {
+              "atMicros": 122262,
+              "n": 2,
+              "hex": "0012"
+            }
+          ],
+          "totalBytes": 2,
+          "elapsedMicros": 622875,
+          "hex": "0012",
+          "ascii": ".."
+        },
+        {
+          "index": 3,
+          "chunks": [
+            {
+              "atMicros": 3185,
+              "n": 2,
+              "hex": "0012"
+            }
+          ],
+          "totalBytes": 2,
+          "elapsedMicros": 503743,
+          "hex": "0012",
+          "ascii": ".."
+        },
+        {
+          "index": 4,
+          "chunks": [
+            {
+              "atMicros": 18429,
+              "n": 2,
+              "hex": "0011"
+            }
+          ],
+          "totalBytes": 2,
+          "elapsedMicros": 519000,
+          "hex": "0011",
+          "ascii": ".."
+        },
+        {
+          "index": 5,
+          "chunks": [
+            {
+              "atMicros": 122291,
+              "n": 2,
+              "hex": "0011"
+            }
+          ],
+          "totalBytes": 2,
+          "elapsedMicros": 622771,
+          "hex": "0011",
+          "ascii": ".."
+        },
+        {
+          "index": 6,
+          "chunks": [
+            {
+              "atMicros": 3169,
+              "n": 2,
+              "hex": "0011"
+            }
+          ],
+          "totalBytes": 2,
+          "elapsedMicros": 503739,
+          "hex": "0011",
+          "ascii": ".."
+        },
+        {
+          "index": 7,
+          "chunks": [
+            {
+              "atMicros": 18176,
+              "n": 2,
+              "hex": "0011"
+            }
+          ],
+          "totalBytes": 2,
+          "elapsedMicros": 518585,
+          "hex": "0011",
+          "ascii": ".."
+        },
+        {
+          "index": 8,
+          "chunks": [
+            {
+              "atMicros": 122404,
+              "n": 2,
+              "hex": "0010"
+            }
+          ],
+          "totalBytes": 2,
+          "elapsedMicros": 622940,
+          "hex": "0010",
+          "ascii": ".."
+        },
+        {
+          "index": 9,
+          "chunks": [
+            {
+              "atMicros": 3193,
+              "n": 2,
+              "hex": "0010"
+            }
+          ],
+          "totalBytes": 2,
+          "elapsedMicros": 503732,
+          "hex": "0010",
+          "ascii": ".."
+        },
+        {
+          "index": 10,
+          "chunks": [
+            {
+              "atMicros": 18238,
+              "n": 2,
+              "hex": "000f"
+            }
+          ],
+          "totalBytes": 2,
+          "elapsedMicros": 518739,
+          "hex": "000f",
+          "ascii": ".."
+        },
+        {
+          "index": 11,
+          "chunks": [
+            {
+              "atMicros": 122170,
+              "n": 2,
+              "hex": "000e"
+            }
+          ],
+          "totalBytes": 2,
+          "elapsedMicros": 622724,
+          "hex": "000e",
+          "ascii": ".."
+        },
+        {
+          "index": 12,
+          "chunks": [
+            {
+              "atMicros": 3092,
+              "n": 2,
+              "hex": "000e"
+            }
+          ],
+          "totalBytes": 2,
+          "elapsedMicros": 503487,
+          "hex": "000e",
+          "ascii": ".."
+        },
+        {
+          "index": 13,
+          "chunks": [
+            {
+              "atMicros": 18553,
+              "n": 2,
+              "hex": "000e"
+            }
+          ],
+          "totalBytes": 2,
+          "elapsedMicros": 519051,
+          "hex": "000e",
+          "ascii": ".."
+        },
+        {
+          "index": 14,
+          "chunks": [
+            {
+              "atMicros": 122118,
+              "n": 2,
+              "hex": "000d"
+            }
+          ],
+          "totalBytes": 2,
+          "elapsedMicros": 622738,
+          "hex": "000d",
+          "ascii": ".."
+        },
+        {
+          "index": 15,
+          "chunks": [
+            {
+              "atMicros": 3110,
+              "n": 2,
+              "hex": "000d"
+            }
+          ],
+          "totalBytes": 2,
+          "elapsedMicros": 503669,
+          "hex": "000d",
+          "ascii": ".."
+        },
+        {
+          "index": 16,
+          "chunks": [
+            {
+              "atMicros": 3136,
+              "n": 2,
+              "hex": "000f"
+            }
+          ],
+          "totalBytes": 2,
+          "elapsedMicros": 503705,
+          "hex": "000f",
+          "ascii": ".."
+        },
+        {
+          "index": 17,
+          "chunks": [
+            {
+              "atMicros": 152673,
+              "n": 2,
+              "hex": "000f"
+            }
+          ],
+          "totalBytes": 2,
+          "elapsedMicros": 653351,
+          "hex": "000f",
+          "ascii": ".."
+        },
+        {
+          "index": 18,
+          "chunks": [
+            {
+              "atMicros": 3286,
+              "n": 2,
+              "hex": "000f"
+            }
+          ],
+          "totalBytes": 2,
+          "elapsedMicros": 503689,
+          "hex": "000f",
+          "ascii": ".."
+        },
+        {
+          "index": 19,
+          "chunks": [
+            {
+              "atMicros": 3137,
+              "n": 2,
+              "hex": "0010"
+            }
+          ],
+          "totalBytes": 2,
+          "elapsedMicros": 503728,
+          "hex": "0010",
+          "ascii": ".."
+        }
+      ],
+      "minBytes": 2,
+      "maxBytes": 2,
+      "lengthCounts": {
+        "2": 20
+      },
+      "chunkCounts": {
+        "1": 20
+      },
+      "splitReadCount": 0,
+      "matchesSpec": true
+    },
+    {
+      "name": "GETVOLT",
+      "command": "\u003cGETVOLT\u003e\u003e",
+      "specBytes": 1,
+      "specSection": "5",
+      "iterations": [
+        {
+          "index": 0,
+          "chunks": [
+            {
+              "atMicros": 171283,
+              "n": 1,
+              "hex": "2a"
+            }
+          ],
+          "totalBytes": 1,
+          "elapsedMicros": 671699,
+          "hex": "2a",
+          "ascii": "*"
+        },
+        {
+          "index": 1,
+          "chunks": [
+            {
+              "atMicros": 15586,
+              "n": 1,
+              "hex": "2a"
+            }
+          ],
+          "totalBytes": 1,
+          "elapsedMicros": 516041,
+          "hex": "2a",
+          "ascii": "*"
+        },
+        {
+          "index": 2,
+          "chunks": [
+            {
+              "atMicros": 15594,
+              "n": 1,
+              "hex": "2a"
+            }
+          ],
+          "totalBytes": 1,
+          "elapsedMicros": 516185,
+          "hex": "2a",
+          "ascii": "*"
+        },
+        {
+          "index": 3,
+          "chunks": [
+            {
+              "atMicros": 129939,
+              "n": 1,
+              "hex": "2a"
+            }
+          ],
+          "totalBytes": 1,
+          "elapsedMicros": 630523,
+          "hex": "2a",
+          "ascii": "*"
+        },
+        {
+          "index": 4,
+          "chunks": [
+            {
+              "atMicros": 42975,
+              "n": 1,
+              "hex": "2a"
+            }
+          ],
+          "totalBytes": 1,
+          "elapsedMicros": 543564,
+          "hex": "2a",
+          "ascii": "*"
+        },
+        {
+          "index": 5,
+          "chunks": [
+            {
+              "atMicros": 15546,
+              "n": 1,
+              "hex": "2a"
+            }
+          ],
+          "totalBytes": 1,
+          "elapsedMicros": 516108,
+          "hex": "2a",
+          "ascii": "*"
+        },
+        {
+          "index": 6,
+          "chunks": [
+            {
+              "atMicros": 67615,
+              "n": 1,
+              "hex": "2a"
+            }
+          ],
+          "totalBytes": 1,
+          "elapsedMicros": 568015,
+          "hex": "2a",
+          "ascii": "*"
+        },
+        {
+          "index": 7,
+          "chunks": [
+            {
+              "atMicros": 15593,
+              "n": 1,
+              "hex": "2a"
+            }
+          ],
+          "totalBytes": 1,
+          "elapsedMicros": 516178,
+          "hex": "2a",
+          "ascii": "*"
+        },
+        {
+          "index": 8,
+          "chunks": [
+            {
+              "atMicros": 15624,
+              "n": 1,
+              "hex": "2a"
+            }
+          ],
+          "totalBytes": 1,
+          "elapsedMicros": 516045,
+          "hex": "2a",
+          "ascii": "*"
+        },
+        {
+          "index": 9,
+          "chunks": [
+            {
+              "atMicros": 121261,
+              "n": 1,
+              "hex": "2a"
+            }
+          ],
+          "totalBytes": 1,
+          "elapsedMicros": 621756,
+          "hex": "2a",
+          "ascii": "*"
+        },
+        {
+          "index": 10,
+          "chunks": [
+            {
+              "atMicros": 15751,
+              "n": 1,
+              "hex": "2a"
+            }
+          ],
+          "totalBytes": 1,
+          "elapsedMicros": 516320,
+          "hex": "2a",
+          "ascii": "*"
+        },
+        {
+          "index": 11,
+          "chunks": [
+            {
+              "atMicros": 15659,
+              "n": 1,
+              "hex": "2a"
+            }
+          ],
+          "totalBytes": 1,
+          "elapsedMicros": 516483,
+          "hex": "2a",
+          "ascii": "*"
+        },
+        {
+          "index": 12,
+          "chunks": [
+            {
+              "atMicros": 111928,
+              "n": 1,
+              "hex": "2a"
+            }
+          ],
+          "totalBytes": 1,
+          "elapsedMicros": 612428,
+          "hex": "2a",
+          "ascii": "*"
+        },
+        {
+          "index": 13,
+          "chunks": [
+            {
+              "atMicros": 15638,
+              "n": 1,
+              "hex": "2a"
+            }
+          ],
+          "totalBytes": 1,
+          "elapsedMicros": 516195,
+          "hex": "2a",
+          "ascii": "*"
+        },
+        {
+          "index": 14,
+          "chunks": [
+            {
+              "atMicros": 25472,
+              "n": 1,
+              "hex": "2a"
+            }
+          ],
+          "totalBytes": 1,
+          "elapsedMicros": 526050,
+          "hex": "2a",
+          "ascii": "*"
+        },
+        {
+          "index": 15,
+          "chunks": [
+            {
+              "atMicros": 122256,
+              "n": 1,
+              "hex": "2a"
+            }
+          ],
+          "totalBytes": 1,
+          "elapsedMicros": 622842,
+          "hex": "2a",
+          "ascii": "*"
+        },
+        {
+          "index": 16,
+          "chunks": [
+            {
+              "atMicros": 15683,
+              "n": 1,
+              "hex": "2a"
+            }
+          ],
+          "totalBytes": 1,
+          "elapsedMicros": 516202,
+          "hex": "2a",
+          "ascii": "*"
+        },
+        {
+          "index": 17,
+          "chunks": [
+            {
+              "atMicros": 15610,
+              "n": 1,
+              "hex": "2a"
+            }
+          ],
+          "totalBytes": 1,
+          "elapsedMicros": 516173,
+          "hex": "2a",
+          "ascii": "*"
+        },
+        {
+          "index": 18,
+          "chunks": [
+            {
+              "atMicros": 127131,
+              "n": 1,
+              "hex": "2a"
+            }
+          ],
+          "totalBytes": 1,
+          "elapsedMicros": 627712,
+          "hex": "2a",
+          "ascii": "*"
+        },
+        {
+          "index": 19,
+          "chunks": [
+            {
+              "atMicros": 15669,
+              "n": 1,
+              "hex": "2a"
+            }
+          ],
+          "totalBytes": 1,
+          "elapsedMicros": 516042,
+          "hex": "2a",
+          "ascii": "*"
+        }
+      ],
+      "minBytes": 1,
+      "maxBytes": 1,
+      "lengthCounts": {
+        "1": 20
+      },
+      "chunkCounts": {
+        "1": 20
+      },
+      "splitReadCount": 0,
+      "matchesSpec": true
+    },
+    {
+      "name": "GETCFG",
+      "command": "\u003cGETCFG\u003e\u003e",
+      "specBytes": 256,
+      "specSection": "7",
+      "iterations": [
+        {
+          "index": 0,
+          "chunks": [
+            {
+              "atMicros": 9622,
+              "n": 32,
+              "hex": "000100001f000064003c14aec73e00f014aec73f03e80000d040010000003f00"
+            },
+            {
+              "atMicros": 12444,
+              "n": 32,
+              "hex": "010200000000ffffffffffff0001007815ffff3c0002ff0100fe0a00010a0064"
+            },
+            {
+              "atMicros": 15540,
+              "n": 32,
+              "hex": "000000003f1a081c0e1224ffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 18602,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 21638,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 24719,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 27797,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 30833,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            }
+          ],
+          "totalBytes": 256,
+          "elapsedMicros": 531392,
+          "hex": "000100001f000064003c14aec73e00f014aec73f03e80000d040010000003f00010200000000ffffffffffff0001007815ffff3c0002ff0100fe0a00010a0064000000003f1a081c0e1224ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+          "ascii": ".......d.\u003c...\u003e.....?.....@....?................x...\u003c...........d....?.....$....................................................................................................................................................................................."
+        },
+        {
+          "index": 1,
+          "chunks": [
+            {
+              "atMicros": 90883,
+              "n": 32,
+              "hex": "000100001f000064003c14aec73e00f014aec73f03e80000d040010000003f00"
+            },
+            {
+              "atMicros": 93917,
+              "n": 32,
+              "hex": "010200000000ffffffffffff0001007815ffff3c0002ff0100fe0a00010a0064"
+            },
+            {
+              "atMicros": 96970,
+              "n": 32,
+              "hex": "000000003f1a081c0e1224ffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 100047,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 103121,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 106173,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 109240,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 112290,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            }
+          ],
+          "totalBytes": 256,
+          "elapsedMicros": 612847,
+          "hex": "000100001f000064003c14aec73e00f014aec73f03e80000d040010000003f00010200000000ffffffffffff0001007815ffff3c0002ff0100fe0a00010a0064000000003f1a081c0e1224ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+          "ascii": ".......d.\u003c...\u003e.....?.....@....?................x...\u003c...........d....?.....$....................................................................................................................................................................................."
+        },
+        {
+          "index": 2,
+          "chunks": [
+            {
+              "atMicros": 9462,
+              "n": 32,
+              "hex": "000100001f000064003c14aec73e00f014aec73f03e80000d040010000003f00"
+            },
+            {
+              "atMicros": 12478,
+              "n": 32,
+              "hex": "010200000000ffffffffffff0001007815ffff3c0002ff0100fe0a00010a0064"
+            },
+            {
+              "atMicros": 15551,
+              "n": 32,
+              "hex": "000000003f1a081c0e1224ffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 18594,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 21654,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 24721,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 27767,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 30847,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            }
+          ],
+          "totalBytes": 256,
+          "elapsedMicros": 531234,
+          "hex": "000100001f000064003c14aec73e00f014aec73f03e80000d040010000003f00010200000000ffffffffffff0001007815ffff3c0002ff0100fe0a00010a0064000000003f1a081c0e1224ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+          "ascii": ".......d.\u003c...\u003e.....?.....@....?................x...\u003c...........d....?.....$....................................................................................................................................................................................."
+        },
+        {
+          "index": 3,
+          "chunks": [
+            {
+              "atMicros": 9403,
+              "n": 32,
+              "hex": "000100001f000064003c14aec73e00f014aec73f03e80000d040010000003f00"
+            },
+            {
+              "atMicros": 12499,
+              "n": 32,
+              "hex": "010200000000ffffffffffff0001007815ffff3c0002ff0100fe0a00010a0064"
+            },
+            {
+              "atMicros": 15538,
+              "n": 32,
+              "hex": "000000003f1a081c0e1224ffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 18607,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 21647,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 24721,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 27768,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 30850,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            }
+          ],
+          "totalBytes": 256,
+          "elapsedMicros": 531408,
+          "hex": "000100001f000064003c14aec73e00f014aec73f03e80000d040010000003f00010200000000ffffffffffff0001007815ffff3c0002ff0100fe0a00010a0064000000003f1a081c0e1224ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+          "ascii": ".......d.\u003c...\u003e.....?.....@....?................x...\u003c...........d....?.....$....................................................................................................................................................................................."
+        },
+        {
+          "index": 4,
+          "chunks": [
+            {
+              "atMicros": 60839,
+              "n": 32,
+              "hex": "000100001f000064003c14aec73e00f014aec73f03e80000d040010000003f00"
+            },
+            {
+              "atMicros": 63890,
+              "n": 32,
+              "hex": "010200000000ffffffffffff0001007815ffff3c0002ff0100fe0a00010a0064"
+            },
+            {
+              "atMicros": 66960,
+              "n": 32,
+              "hex": "000000003f1a081c0e1224ffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 70022,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 73092,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 76166,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 79215,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 82288,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            }
+          ],
+          "totalBytes": 256,
+          "elapsedMicros": 582798,
+          "hex": "000100001f000064003c14aec73e00f014aec73f03e80000d040010000003f00010200000000ffffffffffff0001007815ffff3c0002ff0100fe0a00010a0064000000003f1a081c0e1224ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+          "ascii": ".......d.\u003c...\u003e.....?.....@....?................x...\u003c...........d....?.....$....................................................................................................................................................................................."
+        },
+        {
+          "index": 5,
+          "chunks": [
+            {
+              "atMicros": 9406,
+              "n": 32,
+              "hex": "000100001f000064003c14aec73e00f014aec73f03e80000d040010000003f00"
+            },
+            {
+              "atMicros": 12447,
+              "n": 32,
+              "hex": "010200000000ffffffffffff0001007815ffff3c0002ff0100fe0a00010a0064"
+            },
+            {
+              "atMicros": 15515,
+              "n": 32,
+              "hex": "000000003f1a081c0e1224ffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 18595,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 21636,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 24724,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 27763,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 30839,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            }
+          ],
+          "totalBytes": 256,
+          "elapsedMicros": 531392,
+          "hex": "000100001f000064003c14aec73e00f014aec73f03e80000d040010000003f00010200000000ffffffffffff0001007815ffff3c0002ff0100fe0a00010a0064000000003f1a081c0e1224ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+          "ascii": ".......d.\u003c...\u003e.....?.....@....?................x...\u003c...........d....?.....$....................................................................................................................................................................................."
+        },
+        {
+          "index": 6,
+          "chunks": [
+            {
+              "atMicros": 9442,
+              "n": 32,
+              "hex": "000100001f000064003c14aec73e00f014aec73f03e80000d040010000003f00"
+            },
+            {
+              "atMicros": 12468,
+              "n": 32,
+              "hex": "010200000000ffffffffffff0001007815ffff3c0002ff0100fe0a00010a0064"
+            },
+            {
+              "atMicros": 15545,
+              "n": 32,
+              "hex": "000000003f1a081c0e1224ffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 18639,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 21671,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 24735,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 27824,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 30865,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            }
+          ],
+          "totalBytes": 256,
+          "elapsedMicros": 531387,
+          "hex": "000100001f000064003c14aec73e00f014aec73f03e80000d040010000003f00010200000000ffffffffffff0001007815ffff3c0002ff0100fe0a00010a0064000000003f1a081c0e1224ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+          "ascii": ".......d.\u003c...\u003e.....?.....@....?................x...\u003c...........d....?.....$....................................................................................................................................................................................."
+        },
+        {
+          "index": 7,
+          "chunks": [
+            {
+              "atMicros": 60709,
+              "n": 32,
+              "hex": "000100001f000064003c14aec73e00f014aec73f03e80000d040010000003f00"
+            },
+            {
+              "atMicros": 63765,
+              "n": 32,
+              "hex": "010200000000ffffffffffff0001007815ffff3c0002ff0100fe0a00010a0064"
+            },
+            {
+              "atMicros": 66835,
+              "n": 32,
+              "hex": "000000003f1a081c0e1224ffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 69897,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 72966,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 76016,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 79087,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 82167,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            }
+          ],
+          "totalBytes": 256,
+          "elapsedMicros": 582520,
+          "hex": "000100001f000064003c14aec73e00f014aec73f03e80000d040010000003f00010200000000ffffffffffff0001007815ffff3c0002ff0100fe0a00010a0064000000003f1a081c0e1224ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+          "ascii": ".......d.\u003c...\u003e.....?.....@....?................x...\u003c...........d....?.....$....................................................................................................................................................................................."
+        },
+        {
+          "index": 8,
+          "chunks": [
+            {
+              "atMicros": 9401,
+              "n": 32,
+              "hex": "000100001f000064003c14aec73e00f014aec73f03e80000d040010000003f00"
+            },
+            {
+              "atMicros": 12466,
+              "n": 32,
+              "hex": "010200000000ffffffffffff0001007815ffff3c0002ff0100fe0a00010a0064"
+            },
+            {
+              "atMicros": 15626,
+              "n": 32,
+              "hex": "000000003f1a081c0e1224ffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 18587,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 21665,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 24716,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 27809,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 30860,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            }
+          ],
+          "totalBytes": 256,
+          "elapsedMicros": 531605,
+          "hex": "000100001f000064003c14aec73e00f014aec73f03e80000d040010000003f00010200000000ffffffffffff0001007815ffff3c0002ff0100fe0a00010a0064000000003f1a081c0e1224ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+          "ascii": ".......d.\u003c...\u003e.....?.....@....?................x...\u003c...........d....?.....$....................................................................................................................................................................................."
+        },
+        {
+          "index": 9,
+          "chunks": [
+            {
+              "atMicros": 9458,
+              "n": 32,
+              "hex": "000100001f000064003c14aec73e00f014aec73f03e80000d040010000003f00"
+            },
+            {
+              "atMicros": 12454,
+              "n": 32,
+              "hex": "010200000000ffffffffffff0001007815ffff3c0002ff0100fe0a00010a0064"
+            },
+            {
+              "atMicros": 15522,
+              "n": 32,
+              "hex": "000000003f1a081c0e1224ffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 18593,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 21641,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 24718,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 27788,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 30837,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            }
+          ],
+          "totalBytes": 256,
+          "elapsedMicros": 531217,
+          "hex": "000100001f000064003c14aec73e00f014aec73f03e80000d040010000003f00010200000000ffffffffffff0001007815ffff3c0002ff0100fe0a00010a0064000000003f1a081c0e1224ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+          "ascii": ".......d.\u003c...\u003e.....?.....@....?................x...\u003c...........d....?.....$....................................................................................................................................................................................."
+        },
+        {
+          "index": 10,
+          "chunks": [
+            {
+              "atMicros": 60878,
+              "n": 32,
+              "hex": "000100001f000064003c14aec73e00f014aec73f03e80000d040010000003f00"
+            },
+            {
+              "atMicros": 63962,
+              "n": 32,
+              "hex": "010200000000ffffffffffff0001007815ffff3c0002ff0100fe0a00010a0064"
+            },
+            {
+              "atMicros": 66976,
+              "n": 32,
+              "hex": "000000003f1a081c0e1224ffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 70054,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 73127,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 76176,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 79253,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 82299,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            }
+          ],
+          "totalBytes": 256,
+          "elapsedMicros": 582745,
+          "hex": "000100001f000064003c14aec73e00f014aec73f03e80000d040010000003f00010200000000ffffffffffff0001007815ffff3c0002ff0100fe0a00010a0064000000003f1a081c0e1224ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+          "ascii": ".......d.\u003c...\u003e.....?.....@....?................x...\u003c...........d....?.....$....................................................................................................................................................................................."
+        },
+        {
+          "index": 11,
+          "chunks": [
+            {
+              "atMicros": 9413,
+              "n": 32,
+              "hex": "000100001f000064003c14aec73e00f014aec73f03e80000d040010000003f00"
+            },
+            {
+              "atMicros": 12567,
+              "n": 32,
+              "hex": "010200000000ffffffffffff0001007815ffff3c0002ff0100fe0a00010a0064"
+            },
+            {
+              "atMicros": 15554,
+              "n": 32,
+              "hex": "000000003f1a081c0e1224ffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 19506,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 21687,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 24744,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 27805,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 30872,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            }
+          ],
+          "totalBytes": 256,
+          "elapsedMicros": 531456,
+          "hex": "000100001f000064003c14aec73e00f014aec73f03e80000d040010000003f00010200000000ffffffffffff0001007815ffff3c0002ff0100fe0a00010a0064000000003f1a081c0e1224ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+          "ascii": ".......d.\u003c...\u003e.....?.....@....?................x...\u003c...........d....?.....$....................................................................................................................................................................................."
+        },
+        {
+          "index": 12,
+          "chunks": [
+            {
+              "atMicros": 9425,
+              "n": 32,
+              "hex": "000100001f000064003c14aec73e00f014aec73f03e80000d040010000003f00"
+            },
+            {
+              "atMicros": 12467,
+              "n": 32,
+              "hex": "010200000000ffffffffffff0001007815ffff3c0002ff0100fe0a00010a0064"
+            },
+            {
+              "atMicros": 15568,
+              "n": 32,
+              "hex": "000000003f1a081c0e1224ffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 18591,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 21660,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 24723,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 27805,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 30834,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            }
+          ],
+          "totalBytes": 256,
+          "elapsedMicros": 531390,
+          "hex": "000100001f000064003c14aec73e00f014aec73f03e80000d040010000003f00010200000000ffffffffffff0001007815ffff3c0002ff0100fe0a00010a0064000000003f1a081c0e1224ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+          "ascii": ".......d.\u003c...\u003e.....?.....@....?................x...\u003c...........d....?.....$....................................................................................................................................................................................."
+        },
+        {
+          "index": 13,
+          "chunks": [
+            {
+              "atMicros": 74874,
+              "n": 32,
+              "hex": "000100001f000064003c14aec73e00f014aec73f03e80000d040010000003f00"
+            },
+            {
+              "atMicros": 77900,
+              "n": 32,
+              "hex": "010200000000ffffffffffff0001007815ffff3c0002ff0100fe0a00010a0064"
+            },
+            {
+              "atMicros": 80977,
+              "n": 32,
+              "hex": "000000003f1a081c0e1224ffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 84055,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 87122,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 90177,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 93255,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 96310,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            }
+          ],
+          "totalBytes": 256,
+          "elapsedMicros": 596867,
+          "hex": "000100001f000064003c14aec73e00f014aec73f03e80000d040010000003f00010200000000ffffffffffff0001007815ffff3c0002ff0100fe0a00010a0064000000003f1a081c0e1224ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+          "ascii": ".......d.\u003c...\u003e.....?.....@....?................x...\u003c...........d....?.....$....................................................................................................................................................................................."
+        },
+        {
+          "index": 14,
+          "chunks": [
+            {
+              "atMicros": 9445,
+              "n": 32,
+              "hex": "000100001f000064003c14aec73e00f014aec73f03e80000d040010000003f00"
+            },
+            {
+              "atMicros": 12459,
+              "n": 32,
+              "hex": "010200000000ffffffffffff0001007815ffff3c0002ff0100fe0a00010a0064"
+            },
+            {
+              "atMicros": 15514,
+              "n": 32,
+              "hex": "000000003f1a081c0e1224ffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 18582,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 21667,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 24714,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 27784,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 30861,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            }
+          ],
+          "totalBytes": 256,
+          "elapsedMicros": 531273,
+          "hex": "000100001f000064003c14aec73e00f014aec73f03e80000d040010000003f00010200000000ffffffffffff0001007815ffff3c0002ff0100fe0a00010a0064000000003f1a081c0e1224ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+          "ascii": ".......d.\u003c...\u003e.....?.....@....?................x...\u003c...........d....?.....$....................................................................................................................................................................................."
+        },
+        {
+          "index": 15,
+          "chunks": [
+            {
+              "atMicros": 9430,
+              "n": 32,
+              "hex": "000100001f000064003c14aec73e00f014aec73f03e80000d040010000003f00"
+            },
+            {
+              "atMicros": 12442,
+              "n": 32,
+              "hex": "010200000000ffffffffffff0001007815ffff3c0002ff0100fe0a00010a0064"
+            },
+            {
+              "atMicros": 15525,
+              "n": 32,
+              "hex": "000000003f1a081c0e1224ffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 18603,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 21689,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 24721,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 27770,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 30846,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            }
+          ],
+          "totalBytes": 256,
+          "elapsedMicros": 531268,
+          "hex": "000100001f000064003c14aec73e00f014aec73f03e80000d040010000003f00010200000000ffffffffffff0001007815ffff3c0002ff0100fe0a00010a0064000000003f1a081c0e1224ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+          "ascii": ".......d.\u003c...\u003e.....?.....@....?................x...\u003c...........d....?.....$....................................................................................................................................................................................."
+        },
+        {
+          "index": 16,
+          "chunks": [
+            {
+              "atMicros": 94939,
+              "n": 32,
+              "hex": "000100001f000064003c14aec73e00f014aec73f03e80000d040010000003f00"
+            },
+            {
+              "atMicros": 97990,
+              "n": 32,
+              "hex": "010200000000ffffffffffff0001007815ffff3c0002ff0100fe0a00010a0064"
+            },
+            {
+              "atMicros": 101065,
+              "n": 32,
+              "hex": "000000003f1a081c0e1224ffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 104135,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 107194,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 110250,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 113336,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 116363,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            }
+          ],
+          "totalBytes": 256,
+          "elapsedMicros": 616727,
+          "hex": "000100001f000064003c14aec73e00f014aec73f03e80000d040010000003f00010200000000ffffffffffff0001007815ffff3c0002ff0100fe0a00010a0064000000003f1a081c0e1224ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+          "ascii": ".......d.\u003c...\u003e.....?.....@....?................x...\u003c...........d....?.....$....................................................................................................................................................................................."
+        },
+        {
+          "index": 17,
+          "chunks": [
+            {
+              "atMicros": 9447,
+              "n": 32,
+              "hex": "000100001f000064003c14aec73e00f014aec73f03e80000d040010000003f00"
+            },
+            {
+              "atMicros": 12489,
+              "n": 32,
+              "hex": "010200000000ffffffffffff0001007815ffff3c0002ff0100fe0a00010a0064"
+            },
+            {
+              "atMicros": 15573,
+              "n": 32,
+              "hex": "000000003f1a081c0e1224ffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 18607,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 21730,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 24782,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 27819,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 30884,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            }
+          ],
+          "totalBytes": 256,
+          "elapsedMicros": 531447,
+          "hex": "000100001f000064003c14aec73e00f014aec73f03e80000d040010000003f00010200000000ffffffffffff0001007815ffff3c0002ff0100fe0a00010a0064000000003f1a081c0e1224ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+          "ascii": ".......d.\u003c...\u003e.....?.....@....?................x...\u003c...........d....?.....$....................................................................................................................................................................................."
+        },
+        {
+          "index": 18,
+          "chunks": [
+            {
+              "atMicros": 9412,
+              "n": 32,
+              "hex": "000100001f000064003c14aec73e00f014aec73f03e80000d040010000003f00"
+            },
+            {
+              "atMicros": 12446,
+              "n": 32,
+              "hex": "010200000000ffffffffffff0001007815ffff3c0002ff0100fe0a00010a0064"
+            },
+            {
+              "atMicros": 15514,
+              "n": 32,
+              "hex": "000000003f1a081c0e1224ffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 18569,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 21642,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 24693,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 27776,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 30859,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            }
+          ],
+          "totalBytes": 256,
+          "elapsedMicros": 531284,
+          "hex": "000100001f000064003c14aec73e00f014aec73f03e80000d040010000003f00010200000000ffffffffffff0001007815ffff3c0002ff0100fe0a00010a0064000000003f1a081c0e1224ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+          "ascii": ".......d.\u003c...\u003e.....?.....@....?................x...\u003c...........d....?.....$....................................................................................................................................................................................."
+        },
+        {
+          "index": 19,
+          "chunks": [
+            {
+              "atMicros": 26091,
+              "n": 32,
+              "hex": "000100001f000064003c14aec73e00f014aec73f03e80000d040010000003f00"
+            },
+            {
+              "atMicros": 29126,
+              "n": 32,
+              "hex": "010200000000ffffffffffff0001007815ffff3c0002ff0100fe0a00010a0064"
+            },
+            {
+              "atMicros": 32218,
+              "n": 32,
+              "hex": "000000003f1a081c0e1224ffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 35252,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 38332,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 41376,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 44450,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            },
+            {
+              "atMicros": 47544,
+              "n": 32,
+              "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+            }
+          ],
+          "totalBytes": 256,
+          "elapsedMicros": 548115,
+          "hex": "000100001f000064003c14aec73e00f014aec73f03e80000d040010000003f00010200000000ffffffffffff0001007815ffff3c0002ff0100fe0a00010a0064000000003f1a081c0e1224ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+          "ascii": ".......d.\u003c...\u003e.....?.....@....?................x...\u003c...........d....?.....$....................................................................................................................................................................................."
+        }
+      ],
+      "minBytes": 256,
+      "maxBytes": 256,
+      "lengthCounts": {
+        "256": 20
+      },
+      "chunkCounts": {
+        "8": 20
+      },
+      "splitReadCount": 20,
+      "matchesSpec": true
+    },
+    {
+      "name": "GETSERIAL",
+      "command": "\u003cGETSERIAL\u003e\u003e",
+      "specBytes": 7,
+      "specSection": "11",
+      "iterations": [
+        {
+          "index": 0,
+          "chunks": [
+            {
+              "atMicros": 8462,
+              "n": 7,
+              "hex": "f628c40009888c"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 509028,
+          "hex": "f628c40009888c",
+          "ascii": ".(....."
+        },
+        {
+          "index": 1,
+          "chunks": [
+            {
+              "atMicros": 8491,
+              "n": 7,
+              "hex": "f628c40009888c"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 508902,
+          "hex": "f628c40009888c",
+          "ascii": ".(....."
+        },
+        {
+          "index": 2,
+          "chunks": [
+            {
+              "atMicros": 126591,
+              "n": 7,
+              "hex": "f628c40009888c"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 627149,
+          "hex": "f628c40009888c",
+          "ascii": ".(....."
+        },
+        {
+          "index": 3,
+          "chunks": [
+            {
+              "atMicros": 8514,
+              "n": 7,
+              "hex": "f628c40009888c"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 508911,
+          "hex": "f628c40009888c",
+          "ascii": ".(....."
+        },
+        {
+          "index": 4,
+          "chunks": [
+            {
+              "atMicros": 13239,
+              "n": 7,
+              "hex": "f628c40009888c"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 513763,
+          "hex": "f628c40009888c",
+          "ascii": ".(....."
+        },
+        {
+          "index": 5,
+          "chunks": [
+            {
+              "atMicros": 126808,
+              "n": 7,
+              "hex": "f628c40009888c"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 627760,
+          "hex": "f628c40009888c",
+          "ascii": ".(....."
+        },
+        {
+          "index": 6,
+          "chunks": [
+            {
+              "atMicros": 8397,
+              "n": 7,
+              "hex": "f628c40009888c"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 508973,
+          "hex": "f628c40009888c",
+          "ascii": ".(....."
+        },
+        {
+          "index": 7,
+          "chunks": [
+            {
+              "atMicros": 12494,
+              "n": 7,
+              "hex": "f628c40009888c"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 513054,
+          "hex": "f628c40009888c",
+          "ascii": ".(....."
+        },
+        {
+          "index": 8,
+          "chunks": [
+            {
+              "atMicros": 122082,
+              "n": 7,
+              "hex": "f628c40009888c"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 622465,
+          "hex": "f628c40009888c",
+          "ascii": ".(....."
+        },
+        {
+          "index": 9,
+          "chunks": [
+            {
+              "atMicros": 8503,
+              "n": 7,
+              "hex": "f628c40009888c"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 508920,
+          "hex": "f628c40009888c",
+          "ascii": ".(....."
+        },
+        {
+          "index": 10,
+          "chunks": [
+            {
+              "atMicros": 13144,
+              "n": 7,
+              "hex": "f628c40009888c"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 513519,
+          "hex": "f628c40009888c",
+          "ascii": ".(....."
+        },
+        {
+          "index": 11,
+          "chunks": [
+            {
+              "atMicros": 144880,
+              "n": 7,
+              "hex": "f628c40009888c"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 645493,
+          "hex": "f628c40009888c",
+          "ascii": ".(....."
+        },
+        {
+          "index": 12,
+          "chunks": [
+            {
+              "atMicros": 8487,
+              "n": 7,
+              "hex": "f628c40009888c"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 508958,
+          "hex": "f628c40009888c",
+          "ascii": ".(....."
+        },
+        {
+          "index": 13,
+          "chunks": [
+            {
+              "atMicros": 8467,
+              "n": 7,
+              "hex": "f628c40009888c"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 509033,
+          "hex": "f628c40009888c",
+          "ascii": ".(....."
+        },
+        {
+          "index": 14,
+          "chunks": [
+            {
+              "atMicros": 109244,
+              "n": 7,
+              "hex": "f628c40009888c"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 609819,
+          "hex": "f628c40009888c",
+          "ascii": ".(....."
+        },
+        {
+          "index": 15,
+          "chunks": [
+            {
+              "atMicros": 8425,
+              "n": 7,
+              "hex": "f628c40009888c"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 508986,
+          "hex": "f628c40009888c",
+          "ascii": ".(....."
+        },
+        {
+          "index": 16,
+          "chunks": [
+            {
+              "atMicros": 12818,
+              "n": 7,
+              "hex": "f628c40009888c"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 513223,
+          "hex": "f628c40009888c",
+          "ascii": ".(....."
+        },
+        {
+          "index": 17,
+          "chunks": [
+            {
+              "atMicros": 123417,
+              "n": 7,
+              "hex": "f628c40009888c"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 623982,
+          "hex": "f628c40009888c",
+          "ascii": ".(....."
+        },
+        {
+          "index": 18,
+          "chunks": [
+            {
+              "atMicros": 8441,
+              "n": 7,
+              "hex": "f628c40009888c"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 508784,
+          "hex": "f628c40009888c",
+          "ascii": ".(....."
+        },
+        {
+          "index": 19,
+          "chunks": [
+            {
+              "atMicros": 13258,
+              "n": 7,
+              "hex": "f628c40009888c"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 513818,
+          "hex": "f628c40009888c",
+          "ascii": ".(....."
+        }
+      ],
+      "minBytes": 7,
+      "maxBytes": 7,
+      "lengthCounts": {
+        "7": 20
+      },
+      "chunkCounts": {
+        "1": 20
+      },
+      "splitReadCount": 0,
+      "matchesSpec": true
+    },
+    {
+      "name": "GETDATETIME",
+      "command": "\u003cGETDATETIME\u003e\u003e",
+      "specBytes": 7,
+      "specSection": "23",
+      "iterations": [
+        {
+          "index": 0,
+          "chunks": [
+            {
+              "atMicros": 149761,
+              "n": 7,
+              "hex": "1a0908140c14aa"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 650199,
+          "hex": "1a0908140c14aa",
+          "ascii": "......."
+        },
+        {
+          "index": 1,
+          "chunks": [
+            {
+              "atMicros": 36278,
+              "n": 7,
+              "hex": "1a0908140c15aa"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 536744,
+          "hex": "1a0908140c15aa",
+          "ascii": "......."
+        },
+        {
+          "index": 2,
+          "chunks": [
+            {
+              "atMicros": 36358,
+              "n": 7,
+              "hex": "1a0908140c15aa"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 536798,
+          "hex": "1a0908140c15aa",
+          "ascii": "......."
+        },
+        {
+          "index": 3,
+          "chunks": [
+            {
+              "atMicros": 81385,
+              "n": 7,
+              "hex": "1a0908140c16aa"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 581980,
+          "hex": "1a0908140c16aa",
+          "ascii": "......."
+        },
+        {
+          "index": 4,
+          "chunks": [
+            {
+              "atMicros": 36242,
+              "n": 7,
+              "hex": "1a0908140c17aa"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 536712,
+          "hex": "1a0908140c17aa",
+          "ascii": "......."
+        },
+        {
+          "index": 5,
+          "chunks": [
+            {
+              "atMicros": 36337,
+              "n": 7,
+              "hex": "1a0908140c17aa"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 536762,
+          "hex": "1a0908140c17aa",
+          "ascii": "......."
+        },
+        {
+          "index": 6,
+          "chunks": [
+            {
+              "atMicros": 71440,
+              "n": 7,
+              "hex": "1a0908140c18aa"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 572046,
+          "hex": "1a0908140c18aa",
+          "ascii": "......."
+        },
+        {
+          "index": 7,
+          "chunks": [
+            {
+              "atMicros": 36355,
+              "n": 7,
+              "hex": "1a0908140c19aa"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 536943,
+          "hex": "1a0908140c19aa",
+          "ascii": "......."
+        },
+        {
+          "index": 8,
+          "chunks": [
+            {
+              "atMicros": 36298,
+              "n": 7,
+              "hex": "1a0908140c19aa"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 536855,
+          "hex": "1a0908140c19aa",
+          "ascii": "......."
+        },
+        {
+          "index": 9,
+          "chunks": [
+            {
+              "atMicros": 70947,
+              "n": 7,
+              "hex": "1a0908140c1aaa"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 571517,
+          "hex": "1a0908140c1aaa",
+          "ascii": "......."
+        },
+        {
+          "index": 10,
+          "chunks": [
+            {
+              "atMicros": 36369,
+              "n": 7,
+              "hex": "1a0908140c1baa"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 536849,
+          "hex": "1a0908140c1baa",
+          "ascii": "......."
+        },
+        {
+          "index": 11,
+          "chunks": [
+            {
+              "atMicros": 36315,
+              "n": 7,
+              "hex": "1a0908140c1baa"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 536736,
+          "hex": "1a0908140c1baa",
+          "ascii": "......."
+        },
+        {
+          "index": 12,
+          "chunks": [
+            {
+              "atMicros": 70755,
+              "n": 7,
+              "hex": "1a0908140c1caa"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 571130,
+          "hex": "1a0908140c1caa",
+          "ascii": "......."
+        },
+        {
+          "index": 13,
+          "chunks": [
+            {
+              "atMicros": 36391,
+              "n": 7,
+              "hex": "1a0908140c1daa"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 536980,
+          "hex": "1a0908140c1daa",
+          "ascii": "......."
+        },
+        {
+          "index": 14,
+          "chunks": [
+            {
+              "atMicros": 36353,
+              "n": 7,
+              "hex": "1a0908140c1daa"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 536935,
+          "hex": "1a0908140c1daa",
+          "ascii": "......."
+        },
+        {
+          "index": 15,
+          "chunks": [
+            {
+              "atMicros": 70975,
+              "n": 7,
+              "hex": "1a0908140c1eaa"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 571355,
+          "hex": "1a0908140c1eaa",
+          "ascii": "......."
+        },
+        {
+          "index": 16,
+          "chunks": [
+            {
+              "atMicros": 36329,
+              "n": 7,
+              "hex": "1a0908140c1faa"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 536892,
+          "hex": "1a0908140c1faa",
+          "ascii": "......."
+        },
+        {
+          "index": 17,
+          "chunks": [
+            {
+              "atMicros": 36305,
+              "n": 7,
+              "hex": "1a0908140c1faa"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 536896,
+          "hex": "1a0908140c1faa",
+          "ascii": "......."
+        },
+        {
+          "index": 18,
+          "chunks": [
+            {
+              "atMicros": 71012,
+              "n": 7,
+              "hex": "1a0908140c20aa"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 571494,
+          "hex": "1a0908140c20aa",
+          "ascii": "..... ."
+        },
+        {
+          "index": 19,
+          "chunks": [
+            {
+              "atMicros": 36339,
+              "n": 7,
+              "hex": "1a0908140c21aa"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 536913,
+          "hex": "1a0908140c21aa",
+          "ascii": ".....!."
+        }
+      ],
+      "minBytes": 7,
+      "maxBytes": 7,
+      "lengthCounts": {
+        "7": 20
+      },
+      "chunkCounts": {
+        "1": 20
+      },
+      "splitReadCount": 0,
+      "matchesSpec": true
+    },
+    {
+      "name": "GETTEMP",
+      "command": "\u003cGETTEMP\u003e\u003e",
+      "specBytes": 4,
+      "specSection": "24",
+      "iterations": [
+        {
+          "index": 0,
+          "chunks": [
+            {
+              "atMicros": 17439,
+              "n": 4,
+              "hex": "1f0100aa"
+            }
+          ],
+          "totalBytes": 4,
+          "elapsedMicros": 517883,
+          "hex": "1f0100aa",
+          "ascii": "...."
+        },
+        {
+          "index": 1,
+          "chunks": [
+            {
+              "atMicros": 69891,
+              "n": 4,
+              "hex": "1f0000aa"
+            }
+          ],
+          "totalBytes": 4,
+          "elapsedMicros": 570466,
+          "hex": "1f0000aa",
+          "ascii": "...."
+        },
+        {
+          "index": 2,
+          "chunks": [
+            {
+              "atMicros": 17357,
+              "n": 4,
+              "hex": "1f0000aa"
+            }
+          ],
+          "totalBytes": 4,
+          "elapsedMicros": 517930,
+          "hex": "1f0000aa",
+          "ascii": "...."
+        },
+        {
+          "index": 3,
+          "chunks": [
+            {
+              "atMicros": 17354,
+              "n": 4,
+              "hex": "1f0000aa"
+            }
+          ],
+          "totalBytes": 4,
+          "elapsedMicros": 517943,
+          "hex": "1f0000aa",
+          "ascii": "...."
+        },
+        {
+          "index": 4,
+          "chunks": [
+            {
+              "atMicros": 108198,
+              "n": 4,
+              "hex": "1f0000aa"
+            }
+          ],
+          "totalBytes": 4,
+          "elapsedMicros": 608749,
+          "hex": "1f0000aa",
+          "ascii": "...."
+        },
+        {
+          "index": 5,
+          "chunks": [
+            {
+              "atMicros": 17416,
+              "n": 4,
+              "hex": "1f0000aa"
+            }
+          ],
+          "totalBytes": 4,
+          "elapsedMicros": 517762,
+          "hex": "1f0000aa",
+          "ascii": "...."
+        },
+        {
+          "index": 6,
+          "chunks": [
+            {
+              "atMicros": 17441,
+              "n": 4,
+              "hex": "1f0100aa"
+            }
+          ],
+          "totalBytes": 4,
+          "elapsedMicros": 517846,
+          "hex": "1f0100aa",
+          "ascii": "...."
+        },
+        {
+          "index": 7,
+          "chunks": [
+            {
+              "atMicros": 109050,
+              "n": 4,
+              "hex": "1f0000aa"
+            }
+          ],
+          "totalBytes": 4,
+          "elapsedMicros": 609612,
+          "hex": "1f0000aa",
+          "ascii": "...."
+        },
+        {
+          "index": 8,
+          "chunks": [
+            {
+              "atMicros": 17478,
+              "n": 4,
+              "hex": "1f0100aa"
+            }
+          ],
+          "totalBytes": 4,
+          "elapsedMicros": 517803,
+          "hex": "1f0100aa",
+          "ascii": "...."
+        },
+        {
+          "index": 9,
+          "chunks": [
+            {
+              "atMicros": 17486,
+              "n": 4,
+              "hex": "1f0100aa"
+            }
+          ],
+          "totalBytes": 4,
+          "elapsedMicros": 518038,
+          "hex": "1f0100aa",
+          "ascii": "...."
+        },
+        {
+          "index": 10,
+          "chunks": [
+            {
+              "atMicros": 109017,
+              "n": 4,
+              "hex": "1f0000aa"
+            }
+          ],
+          "totalBytes": 4,
+          "elapsedMicros": 609463,
+          "hex": "1f0000aa",
+          "ascii": "...."
+        },
+        {
+          "index": 11,
+          "chunks": [
+            {
+              "atMicros": 17323,
+              "n": 4,
+              "hex": "1f0000aa"
+            }
+          ],
+          "totalBytes": 4,
+          "elapsedMicros": 517752,
+          "hex": "1f0000aa",
+          "ascii": "...."
+        },
+        {
+          "index": 12,
+          "chunks": [
+            {
+              "atMicros": 17473,
+              "n": 4,
+              "hex": "1f0000aa"
+            }
+          ],
+          "totalBytes": 4,
+          "elapsedMicros": 517847,
+          "hex": "1f0000aa",
+          "ascii": "...."
+        },
+        {
+          "index": 13,
+          "chunks": [
+            {
+              "atMicros": 109437,
+              "n": 4,
+              "hex": "1f0000aa"
+            }
+          ],
+          "totalBytes": 4,
+          "elapsedMicros": 609962,
+          "hex": "1f0000aa",
+          "ascii": "...."
+        },
+        {
+          "index": 14,
+          "chunks": [
+            {
+              "atMicros": 17441,
+              "n": 4,
+              "hex": "1f0000aa"
+            }
+          ],
+          "totalBytes": 4,
+          "elapsedMicros": 518026,
+          "hex": "1f0000aa",
+          "ascii": "...."
+        },
+        {
+          "index": 15,
+          "chunks": [
+            {
+              "atMicros": 21054,
+              "n": 4,
+              "hex": "1f0000aa"
+            }
+          ],
+          "totalBytes": 4,
+          "elapsedMicros": 521476,
+          "hex": "1f0000aa",
+          "ascii": "...."
+        },
+        {
+          "index": 16,
+          "chunks": [
+            {
+              "atMicros": 134761,
+              "n": 4,
+              "hex": "1f0100aa"
+            }
+          ],
+          "totalBytes": 4,
+          "elapsedMicros": 635210,
+          "hex": "1f0100aa",
+          "ascii": "...."
+        },
+        {
+          "index": 17,
+          "chunks": [
+            {
+              "atMicros": 17516,
+              "n": 4,
+              "hex": "1f0100aa"
+            }
+          ],
+          "totalBytes": 4,
+          "elapsedMicros": 518033,
+          "hex": "1f0100aa",
+          "ascii": "...."
+        },
+        {
+          "index": 18,
+          "chunks": [
+            {
+              "atMicros": 17389,
+              "n": 4,
+              "hex": "1f0100aa"
+            }
+          ],
+          "totalBytes": 4,
+          "elapsedMicros": 517755,
+          "hex": "1f0100aa",
+          "ascii": "...."
+        },
+        {
+          "index": 19,
+          "chunks": [
+            {
+              "atMicros": 111690,
+              "n": 4,
+              "hex": "1f0100aa"
+            }
+          ],
+          "totalBytes": 4,
+          "elapsedMicros": 612299,
+          "hex": "1f0100aa",
+          "ascii": "...."
+        }
+      ],
+      "minBytes": 4,
+      "maxBytes": 4,
+      "lengthCounts": {
+        "4": 20
+      },
+      "chunkCounts": {
+        "1": 20
+      },
+      "splitReadCount": 0,
+      "matchesSpec": true
+    },
+    {
+      "name": "GETGYRO",
+      "command": "\u003cGETGYRO\u003e\u003e",
+      "specBytes": 7,
+      "specSection": "25",
+      "iterations": [
+        {
+          "index": 0,
+          "chunks": [
+            {
+              "atMicros": 14852,
+              "n": 7,
+              "hex": "c360ffd00150aa"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 515351,
+          "hex": "c360ffd00150aa",
+          "ascii": ".`...P."
+        },
+        {
+          "index": 1,
+          "chunks": [
+            {
+              "atMicros": 14880,
+              "n": 7,
+              "hex": "c310ffc00230aa"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 515430,
+          "hex": "c310ffc00230aa",
+          "ascii": ".....0."
+        },
+        {
+          "index": 2,
+          "chunks": [
+            {
+              "atMicros": 111353,
+              "n": 7,
+              "hex": "c370ffd00210aa"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 611753,
+          "hex": "c370ffd00210aa",
+          "ascii": ".p....."
+        },
+        {
+          "index": 3,
+          "chunks": [
+            {
+              "atMicros": 14766,
+              "n": 7,
+              "hex": "c350fff00160aa"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 515359,
+          "hex": "c350fff00160aa",
+          "ascii": ".P...`."
+        },
+        {
+          "index": 4,
+          "chunks": [
+            {
+              "atMicros": 14793,
+              "n": 7,
+              "hex": "c360ffc00180aa"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 515122,
+          "hex": "c360ffc00180aa",
+          "ascii": ".`....."
+        },
+        {
+          "index": 5,
+          "chunks": [
+            {
+              "atMicros": 114632,
+              "n": 7,
+              "hex": "c310ffe00180aa"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 615163,
+          "hex": "c310ffe00180aa",
+          "ascii": "......."
+        },
+        {
+          "index": 6,
+          "chunks": [
+            {
+              "atMicros": 14844,
+              "n": 7,
+              "hex": "c360fff001c0aa"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 515413,
+          "hex": "c360fff001c0aa",
+          "ascii": ".`....."
+        },
+        {
+          "index": 7,
+          "chunks": [
+            {
+              "atMicros": 15276,
+              "n": 7,
+              "hex": "c310ffe00180aa"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 515768,
+          "hex": "c310ffe00180aa",
+          "ascii": "......."
+        },
+        {
+          "index": 8,
+          "chunks": [
+            {
+              "atMicros": 122307,
+              "n": 7,
+              "hex": "c350ffd001b0aa"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 622753,
+          "hex": "c350ffd001b0aa",
+          "ascii": ".P....."
+        },
+        {
+          "index": 9,
+          "chunks": [
+            {
+              "atMicros": 14819,
+              "n": 7,
+              "hex": "c370000001a0aa"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 515378,
+          "hex": "c370000001a0aa",
+          "ascii": ".p....."
+        },
+        {
+          "index": 10,
+          "chunks": [
+            {
+              "atMicros": 14776,
+              "n": 7,
+              "hex": "c340ff000150aa"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 515408,
+          "hex": "c340ff000150aa",
+          "ascii": ".@...P."
+        },
+        {
+          "index": 11,
+          "chunks": [
+            {
+              "atMicros": 114286,
+              "n": 7,
+              "hex": "c340fff001c0aa"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 614808,
+          "hex": "c340fff001c0aa",
+          "ascii": ".@....."
+        },
+        {
+          "index": 12,
+          "chunks": [
+            {
+              "atMicros": 14768,
+              "n": 7,
+              "hex": "c330fff001b0aa"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 515349,
+          "hex": "c330fff001b0aa",
+          "ascii": ".0....."
+        },
+        {
+          "index": 13,
+          "chunks": [
+            {
+              "atMicros": 14794,
+              "n": 7,
+              "hex": "c320ffc001f0aa"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 515360,
+          "hex": "c320ffc001f0aa",
+          "ascii": ". ....."
+        },
+        {
+          "index": 14,
+          "chunks": [
+            {
+              "atMicros": 114219,
+              "n": 7,
+              "hex": "c330002001b0aa"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 614672,
+          "hex": "c330002001b0aa",
+          "ascii": ".0. ..."
+        },
+        {
+          "index": 15,
+          "chunks": [
+            {
+              "atMicros": 14848,
+              "n": 7,
+              "hex": "c330ff200220aa"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 515272,
+          "hex": "c330ff200220aa",
+          "ascii": ".0. . ."
+        },
+        {
+          "index": 16,
+          "chunks": [
+            {
+              "atMicros": 14933,
+              "n": 7,
+              "hex": "c330ffd001c0aa"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 515506,
+          "hex": "c330ffd001c0aa",
+          "ascii": ".0....."
+        },
+        {
+          "index": 17,
+          "chunks": [
+            {
+              "atMicros": 114433,
+              "n": 7,
+              "hex": "c360ffe001c0aa"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 615004,
+          "hex": "c360ffe001c0aa",
+          "ascii": ".`....."
+        },
+        {
+          "index": 18,
+          "chunks": [
+            {
+              "atMicros": 14878,
+              "n": 7,
+              "hex": "c2f0ffe001b0aa"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 515203,
+          "hex": "c2f0ffe001b0aa",
+          "ascii": "......."
+        },
+        {
+          "index": 19,
+          "chunks": [
+            {
+              "atMicros": 14863,
+              "n": 7,
+              "hex": "c370ff700190aa"
+            }
+          ],
+          "totalBytes": 7,
+          "elapsedMicros": 515303,
+          "hex": "c370ff700190aa",
+          "ascii": ".p.p..."
+        }
+      ],
+      "minBytes": 7,
+      "maxBytes": 7,
+      "lengthCounts": {
+        "7": 20
+      },
+      "chunkCounts": {
+        "1": 20
+      },
+      "splitReadCount": 0,
+      "matchesSpec": true
+    }
+  ]
+}
