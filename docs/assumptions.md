@@ -239,6 +239,37 @@ in [protocol-measurements.md](./protocol-measurements.md).
 - **Recorded by:** Claude Code (Sonnet 4.6)
 - **Date:** 2026-09-09
 
+### Throttle state is in memory and resets on restart
+
+- **Assumption:** `sink.Throttle` keeps the last-publish time in memory, so a
+  container restart allows an immediate publish regardless of when the previous
+  process last published.
+- **Why:** Persisting it would put durable state into a deliberately stateless
+  container, and would need a writable volume, for a very small benefit.
+  Observed cost in practice: two Safecast points six seconds apart across a
+  restart, against a 10 minute interval. At the restart rate of a typical
+  deployment, a nightly backup plus occasional image updates, that is two or
+  three extra points a day.
+- **Accepted risk:** A deployment that restarts frequently would publish more
+  often than the configured interval implies. If that ever matters, the fix is a
+  timestamp file, not a redesign.
+- **Recorded by:** Claude Code (Sonnet 4.6)
+- **Date:** 2026-09-09
+
+### GMCMAP's counter ID is the credential, not the account ID
+
+- **Assumption:** `GOGMC_GMCMAP_COUNTER_ID` is a secret and
+  `GOGMC_GMCMAP_ACCOUNT_ID` is not.
+- **Why:** Measured against the live service. Submitting with a deliberately
+  wrong account ID and a valid counter ID is accepted as far as value
+  validation, answering `ERR4`, while a wrong counter ID is rejected outright
+  with `ERR2`. The account ID is therefore not authenticating anything; the
+  counter ID alone is what grants the ability to publish to a counter's feed.
+- **Consequence:** Anyone holding the counter ID can submit readings
+  attributed to that counter. Treat it like a password.
+- **Recorded by:** Claude Code (Sonnet 4.6)
+- **Date:** 2026-09-09
+
 ### Gaps in a public map's history cannot be backfilled
 
 - **Assumption:** Readings missed during downtime are lost from radmon.org,
