@@ -263,12 +263,18 @@ matching. See [Migrating](../README.md#migrating-from-the-older-gogmc320-exporte
 |---|---|---|---|
 | `GMCMAP_ENABLED` | no | `false` | Enable this sink |
 | `GMCMAP_ACCOUNT_ID` | if enabled | — | Your GMCMAP account ID |
-| `GMCMAP_COUNTER_ID` | if enabled | — | **secret.** Your registered counter ID |
+| `GMCMAP_COUNTER_ID` | if enabled | — | **secret.** Your registered counter ID. This is the real credential |
 | `GMCMAP_MIN_INTERVAL` | no | `0` | Minimum time between publishes. `0` = every poll |
 | `GMCMAP_TIMEOUT` | no | `15s` | Per-request timeout |
 | `GMCMAP_RETRIES` | no | `2` | Retries after the first attempt |
 
 Requires `LATITUDE` and `LONGITUDE`. Publishes to a public map.
+
+> **SECURITY:** The counter ID is the credential, not the account ID. Measured
+> against the live service, a wrong account ID with a valid counter ID is
+> accepted, while a wrong counter ID is rejected. Anyone holding the counter ID
+> can publish readings attributed to your counter, so treat it like a password
+> and supply it with `GOGMC_GMCMAP_COUNTER_ID_FILE`.
 
 ### 7.8 Safecast
 
