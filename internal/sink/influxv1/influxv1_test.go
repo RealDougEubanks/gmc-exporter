@@ -277,7 +277,7 @@ func TestEscaping(t *testing.T) {
 
 func TestLineProtocolEscapesMeasurement(t *testing.T) {
 	r := reading.Reading{Timestamp: sampleTime, CPM: 1, AverageCPM: 1, MicroSievertsPerHour: 0.0065}
-	got := lineProtocol("odd name,with=stuff", r)
+	got := lineProtocol("odd name,with=stuff", snakeFields, false, r)
 	want := `odd\ name\,with=stuff cpm=1i,acpm=1,usvh=0.0065 1700000000000000000`
 	if got != want {
 		t.Errorf("lineProtocol:\n got %q\nwant %q", got, want)
@@ -519,5 +519,87 @@ func TestNewDoesNotRevealPasswordInConfigErrors(t *testing.T) {
 	}
 	if strings.Contains(err.Error(), testPassword) {
 		t.Errorf("password leaked into a configuration error: %v", err)
+	}
+}
+
+// TestLegacyFieldStyleMatchesExistingSchema pins the schema this exporter has
+// to land in to replace the previous one.
+//
+// The field names and tags below were read from a live InfluxDB that the older
+// GoGMC320 exporter had been writing to, not from that project's source. If
+// they drift, dashboards and alerts built on years of existing data silently
+// stop matching, which is a worse failure than an outage because nothing
+// reports an error.
+func TestLegacyFieldStyleMatchesExistingSchema(t *testing.T) {
+	t.Parallel()
+
+	fields, err := FieldNamesFor(StyleLegacy)
+	if err != nil {
+		t.Fatalf("FieldNamesFor: %v", err)
+	}
+
+	r := reading.Reading{
+		Timestamp:            time.Unix(1757383566, 0).UTC(),
+		CPM:                  25,
+		AverageCPM:           18.64865,
+		MicroSievertsPerHour: 0.1625,
+		Voltage:              reading.Some(4.2),
+		TemperatureC:         reading.Some(30.0),
+		Device: reading.DeviceIdentity{
+			Serial:  "f628c40009888c",
+			Version: "GMC-320Re 4.62",
+		},
+	}
+
+	got := lineProtocol("data", fields, true, r)
+
+	want := "data,serial=f628c40009888c,version=GMC-320Re\\ 4.62 " +
+		"CPM=25i,ACPM=18.64865,USV=0.1625,Voltage=4.2,Temperature=30 " +
+		"1757383566000000000"
+
+	if got != want {
+		t.Errorf("line protocol mismatch:\n got: %s\nwant: %s", got, want)
+	}
+
+	// The space in the version string must be escaped, or the tag set ends
+	// early and the rest of the version becomes a stray field.
+	if !strings.Contains(got, `version=GMC-320Re\ 4.62`) {
+		t.Errorf("the space in the version tag was not escaped: %s", got)
+	}
+}
+
+// TestSnakeStyleRemainsTheDefault guards against the legacy schema becoming the
+// default by accident.
+func TestSnakeStyleRemainsTheDefault(t *testing.T) {
+	t.Parallel()
+
+	for _, style := range []string{"", StyleSnake} {
+		fields, err := FieldNamesFor(style)
+		if err != nil {
+			t.Fatalf("FieldNamesFor(%q): %v", style, err)
+		}
+		if fields.CPM != "cpm" || fields.Temperature != "temp_c" {
+			t.Errorf("style %q resolved to %+v, want the snake names", style, fields)
+		}
+	}
+
+	if _, err := FieldNamesFor("nonsense"); err == nil {
+		t.Error("an unknown field style should be rejected at construction")
+	}
+}
+
+// TestDeviceTagsOmittedWhenUnknown covers a device that would not identify
+// itself, which must not produce an empty tag value.
+func TestDeviceTagsOmittedWhenUnknown(t *testing.T) {
+	t.Parallel()
+
+	r := reading.Reading{CPM: 10, Device: reading.DeviceIdentity{}}
+	got := lineProtocol("data", snakeFields, true, r)
+
+	if strings.Contains(got, "serial=") || strings.Contains(got, "version=") {
+		t.Errorf("empty identity should produce no tags, got: %s", got)
+	}
+	if !strings.HasPrefix(got, "data cpm=10i") {
+		t.Errorf("unexpected line: %s", got)
 	}
 }

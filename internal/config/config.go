@@ -114,8 +114,15 @@ type InfluxV1 struct {
 	User        string
 	Password    redact.Secret
 	Measurement string
-	Timeout     time.Duration
-	Retries     int
+	// FieldStyle selects the field key naming: "snake" (default) or
+	// "legacy", which reproduces the schema of the older GoGMC320 exporter so
+	// this one can continue an existing series rather than starting a
+	// parallel one beside it.
+	FieldStyle string
+	// TagDevice adds the device serial and version as tags.
+	TagDevice bool
+	Timeout   time.Duration
+	Retries   int
 }
 
 // InfluxV2 publishes to InfluxDB 2.x using the token/org/bucket model.
@@ -287,6 +294,8 @@ func loadInflux(l *loader, cfg *Config) {
 		User:        l.String("INFLUX1_USER", ""),
 		Password:    l.Secret("INFLUX1_PASSWORD"),
 		Measurement: l.String("INFLUX1_MEASUREMENT", "radiation"),
+		FieldStyle:  l.Enum("INFLUX1_FIELD_STYLE", "snake", "snake", "legacy"),
+		TagDevice:   l.Bool("INFLUX1_TAG_DEVICE", true),
 		Timeout:     l.Duration("INFLUX1_TIMEOUT", 15*time.Second, time.Second, 2*time.Minute),
 		Retries:     l.Int("INFLUX1_RETRIES", 2, 0, 10),
 	}
