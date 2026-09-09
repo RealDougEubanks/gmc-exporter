@@ -121,6 +121,36 @@ deadline.
 Both are recoverable conditions. The correct response to either is to log it,
 skip that reading, and continue to the next poll.
 
+**A single flipped bit.** This one was found later, during a live run rather
+than a capture, and it is the most instructive of the three.
+
+A device that had reported 30.8 °C on three consecutive polls returned 94.8 °C
+on the fourth:
+
+```
+expected  1e 08 00 aa   ->  30.8 C
+received  5e 08 00 aa   ->  94.8 C
+```
+
+`0x1E` against `0x5E` is one bit. Across 418 captured `<GETTEMP>>` replies the
+integer byte was `0x1F` every single time, so this was line noise, not a
+reading.
+
+The lesson is that **structural validation is not sufficient**. The link runs
+8N1 with no parity and the protocol carries no checksum, so a corrupted byte
+produces a response of exactly the right length with exactly the right `0xAA`
+terminator. Every framing check passes. Only a bound on the decoded value
+rejects it.
+
+This is why `ParseTemperature` and `ParseVoltage` apply plausibility ranges.
+Voltage is the more exposed of the two: its reply is a single byte with no
+terminator at all, so one flipped bit turns 4.2 V into 10.6 V with nothing
+structural to notice.
+
+The ranges are deliberately wide, chosen to reject corruption without
+second-guessing a genuine extreme. GQ-RFC1201 documents no ranges, so these are
+plausibility limits rather than specified ones.
+
 ## Calibration table: measured, not specified
 
 **GQ-RFC1201 does not document the contents of the configuration block.**
