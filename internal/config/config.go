@@ -108,8 +108,11 @@ type Radmon struct {
 	// UseLatLng selects the submitwithlatlng function, which additionally
 	// publishes the configured coordinates.
 	UseLatLng bool
-	Timeout   time.Duration
-	Retries   int
+	// MinInterval limits how often this sink publishes, regardless of the
+	// poll interval. Zero means publish on every poll.
+	MinInterval time.Duration
+	Timeout     time.Duration
+	Retries     int
 }
 
 // InfluxV1 publishes to InfluxDB 1.x.
@@ -127,8 +130,11 @@ type InfluxV1 struct {
 	FieldStyle string
 	// TagDevice adds the device serial and version as tags.
 	TagDevice bool
-	Timeout   time.Duration
-	Retries   int
+	// MinInterval limits how often this sink publishes, regardless of the
+	// poll interval. Zero means publish on every poll.
+	MinInterval time.Duration
+	Timeout     time.Duration
+	Retries     int
 }
 
 // InfluxV2 publishes to InfluxDB 2.x using the token/org/bucket model.
@@ -139,6 +145,9 @@ type InfluxV2 struct {
 	Org         string
 	Bucket      string
 	Measurement string
+	// MinInterval limits how often this sink publishes, regardless of the
+	// poll interval. Zero means publish on every poll.
+	MinInterval time.Duration
 	Timeout     time.Duration
 	Retries     int
 }
@@ -150,7 +159,10 @@ type OTLP struct {
 	Endpoint string
 	Headers  map[string]string
 	Insecure bool
-	Timeout  time.Duration
+	// MinInterval limits how often this sink publishes, regardless of the
+	// poll interval. Zero means publish on every poll.
+	MinInterval time.Duration
+	Timeout     time.Duration
 }
 
 // Prometheus exposes a scrape endpoint.
@@ -189,7 +201,10 @@ type MQTT struct {
 	HAPrefix    string
 	DeviceName  string
 
-	Timeout time.Duration
+	// MinInterval limits how often this sink publishes, regardless of the
+	// poll interval. Zero means publish on every poll.
+	MinInterval time.Duration
+	Timeout     time.Duration
 }
 
 // ClientCert is an optional mutual-TLS client certificate pair.
@@ -203,8 +218,11 @@ type GMCMap struct {
 	Enabled   bool
 	AccountID string
 	CounterID redact.Secret
-	Timeout   time.Duration
-	Retries   int
+	// MinInterval limits how often this sink publishes, regardless of the
+	// poll interval. Zero means publish on every poll.
+	MinInterval time.Duration
+	Timeout     time.Duration
+	Retries     int
 }
 
 // Safecast publishes to the Safecast open radiation dataset.
@@ -212,8 +230,11 @@ type Safecast struct {
 	Enabled  bool
 	APIKey   redact.Secret
 	DeviceID int
-	Timeout  time.Duration
-	Retries  int
+	// MinInterval limits how often this sink publishes, regardless of the
+	// poll interval. Zero means publish on every poll.
+	MinInterval time.Duration
+	Timeout     time.Duration
+	Retries     int
 }
 
 // Load reads and validates configuration from the environment.
@@ -303,12 +324,13 @@ func Load(configPath string) (*Config, error) {
 
 func loadRadmon(l *loader, cfg *Config) {
 	cfg.Radmon = Radmon{
-		Enabled:   l.Bool("RADMON_ENABLED", false),
-		User:      l.String("RADMON_USER", ""),
-		Password:  l.Secret("RADMON_PASSWORD"),
-		UseLatLng: l.Bool("RADMON_USE_LATLNG", false),
-		Timeout:   l.Duration("RADMON_TIMEOUT", 15*time.Second, time.Second, 2*time.Minute),
-		Retries:   l.Int("RADMON_RETRIES", 2, 0, 10),
+		Enabled:     l.Bool("RADMON_ENABLED", false),
+		User:        l.String("RADMON_USER", ""),
+		Password:    l.Secret("RADMON_PASSWORD"),
+		UseLatLng:   l.Bool("RADMON_USE_LATLNG", false),
+		Timeout:     l.Duration("RADMON_TIMEOUT", 15*time.Second, time.Second, 2*time.Minute),
+		MinInterval: l.Duration("RADMON_MIN_INTERVAL", 0, 0, 24*time.Hour),
+		Retries:     l.Int("RADMON_RETRIES", 2, 0, 10),
 	}
 	if cfg.Radmon.Enabled {
 		l.require("radmon.org", "RADMON_USER", cfg.Radmon.User)
@@ -327,6 +349,7 @@ func loadInflux(l *loader, cfg *Config) {
 		FieldStyle:  l.Enum("INFLUX1_FIELD_STYLE", "snake", "snake", "legacy"),
 		TagDevice:   l.Bool("INFLUX1_TAG_DEVICE", true),
 		Timeout:     l.Duration("INFLUX1_TIMEOUT", 15*time.Second, time.Second, 2*time.Minute),
+		MinInterval: l.Duration("INFLUX1_MIN_INTERVAL", 0, 0, 24*time.Hour),
 		Retries:     l.Int("INFLUX1_RETRIES", 2, 0, 10),
 	}
 	if cfg.InfluxV1.Enabled {
@@ -342,6 +365,7 @@ func loadInflux(l *loader, cfg *Config) {
 		Bucket:      l.String("INFLUX2_BUCKET", ""),
 		Measurement: l.String("INFLUX2_MEASUREMENT", "radiation"),
 		Timeout:     l.Duration("INFLUX2_TIMEOUT", 15*time.Second, time.Second, 2*time.Minute),
+		MinInterval: l.Duration("INFLUX2_MIN_INTERVAL", 0, 0, 24*time.Hour),
 		Retries:     l.Int("INFLUX2_RETRIES", 2, 0, 10),
 	}
 	if cfg.InfluxV2.Enabled {
@@ -354,12 +378,13 @@ func loadInflux(l *loader, cfg *Config) {
 
 func loadOTLP(l *loader, cfg *Config) {
 	cfg.OTLP = OTLP{
-		Enabled:  l.Bool("OTLP_ENABLED", false),
-		Protocol: l.Enum("OTLP_PROTOCOL", "grpc", "grpc", "http"),
-		Endpoint: l.String("OTLP_ENDPOINT", ""),
-		Headers:  l.StringMap("OTLP_HEADERS"),
-		Insecure: l.Bool("OTLP_INSECURE", false),
-		Timeout:  l.Duration("OTLP_TIMEOUT", 15*time.Second, time.Second, 2*time.Minute),
+		Enabled:     l.Bool("OTLP_ENABLED", false),
+		Protocol:    l.Enum("OTLP_PROTOCOL", "grpc", "grpc", "http"),
+		Endpoint:    l.String("OTLP_ENDPOINT", ""),
+		Headers:     l.StringMap("OTLP_HEADERS"),
+		Insecure:    l.Bool("OTLP_INSECURE", false),
+		Timeout:     l.Duration("OTLP_TIMEOUT", 15*time.Second, time.Second, 2*time.Minute),
+		MinInterval: l.Duration("OTLP_MIN_INTERVAL", 0, 0, 24*time.Hour),
 	}
 	if cfg.OTLP.Enabled {
 		l.require("OTLP", "OTLP_ENDPOINT", cfg.OTLP.Endpoint)
@@ -397,6 +422,7 @@ func loadMQTT(l *loader, cfg *Config) {
 		HAPrefix:    l.String("MQTT_HA_PREFIX", "homeassistant"),
 		DeviceName:  l.String("MQTT_DEVICE_NAME", "Geiger Counter"),
 		Timeout:     l.Duration("MQTT_TIMEOUT", 15*time.Second, time.Second, 2*time.Minute),
+		MinInterval: l.Duration("MQTT_MIN_INTERVAL", 0, 0, 24*time.Hour),
 	}
 	if !cfg.MQTT.Enabled {
 		return
@@ -412,11 +438,12 @@ func loadMQTT(l *loader, cfg *Config) {
 
 func loadMaps(l *loader, cfg *Config) {
 	cfg.GMCMap = GMCMap{
-		Enabled:   l.Bool("GMCMAP_ENABLED", false),
-		AccountID: l.String("GMCMAP_ACCOUNT_ID", ""),
-		CounterID: l.Secret("GMCMAP_COUNTER_ID"),
-		Timeout:   l.Duration("GMCMAP_TIMEOUT", 15*time.Second, time.Second, 2*time.Minute),
-		Retries:   l.Int("GMCMAP_RETRIES", 2, 0, 10),
+		Enabled:     l.Bool("GMCMAP_ENABLED", false),
+		AccountID:   l.String("GMCMAP_ACCOUNT_ID", ""),
+		CounterID:   l.Secret("GMCMAP_COUNTER_ID"),
+		Timeout:     l.Duration("GMCMAP_TIMEOUT", 15*time.Second, time.Second, 2*time.Minute),
+		MinInterval: l.Duration("GMCMAP_MIN_INTERVAL", 0, 0, 24*time.Hour),
+		Retries:     l.Int("GMCMAP_RETRIES", 2, 0, 10),
 	}
 	if cfg.GMCMap.Enabled {
 		l.require("GMCMAP", "GMCMAP_ACCOUNT_ID", cfg.GMCMap.AccountID)
@@ -424,11 +451,12 @@ func loadMaps(l *loader, cfg *Config) {
 	}
 
 	cfg.Safecast = Safecast{
-		Enabled:  l.Bool("SAFECAST_ENABLED", false),
-		APIKey:   l.Secret("SAFECAST_API_KEY"),
-		DeviceID: l.Int("SAFECAST_DEVICE_ID", 0, 0, 1<<31-1),
-		Timeout:  l.Duration("SAFECAST_TIMEOUT", 15*time.Second, time.Second, 2*time.Minute),
-		Retries:  l.Int("SAFECAST_RETRIES", 2, 0, 10),
+		Enabled:     l.Bool("SAFECAST_ENABLED", false),
+		APIKey:      l.Secret("SAFECAST_API_KEY"),
+		DeviceID:    l.Int("SAFECAST_DEVICE_ID", 0, 0, 1<<31-1),
+		Timeout:     l.Duration("SAFECAST_TIMEOUT", 15*time.Second, time.Second, 2*time.Minute),
+		MinInterval: l.Duration("SAFECAST_MIN_INTERVAL", 10*time.Minute, 0, 24*time.Hour),
+		Retries:     l.Int("SAFECAST_RETRIES", 2, 0, 10),
 	}
 	if cfg.Safecast.Enabled {
 		l.requireSecret("Safecast", "SAFECAST_API_KEY", cfg.Safecast.APIKey)

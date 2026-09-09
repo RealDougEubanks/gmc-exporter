@@ -1,3 +1,9 @@
+<!--
+doc: README
+last-refreshed: 2026-09-09
+generated-by: doc-refresh skill
+-->
+
 # gmc-exporter
 
 Reads a GQ Electronics GMC-series Geiger counter over USB serial and publishes
@@ -116,8 +122,11 @@ Measured against a real device node:
 
 A volume mount makes the node visible but grants no device permission, which is
 why that route still needs `--privileged`. `--device` grants the cgroup rule
-directly, so privileged mode becomes unnecessary — and privileged grants every
-capability on the host to solve what is really a file-permission problem.
+directly, so privileged mode becomes unnecessary.
+
+> **SECURITY:** Do not reach for `--privileged` to make a permission error go
+> away. It grants every capability on the host in order to solve a
+> file-permission problem. Use `--device` with `--group-add` instead.
 
 Find the group with `stat -c '%g' /dev/ttyUSB0`; it is usually 16 (`dialout`).
 
@@ -186,10 +195,14 @@ pass instead of one restart per mistake.
 `GOGMC_LATITUDE` and `GOGMC_LONGITUDE` are shared by every sink that needs
 coordinates. They are optional and must be set together.
 
-**This data is published publicly.** It is attached to every reading sent to a
-public radiation map and cannot be recalled. Sinks that require coordinates
-refuse to start without them rather than substituting a default, because a
-default would silently publish your readings attributed to the wrong place.
+> **SECURITY:** This data is **published publicly**. It is attached to every
+> reading sent to a public radiation map and cannot be recalled. A Geiger
+> counter is usually at the operator's home, so these coordinates are
+> effectively a home address. Two decimal places is roughly a kilometre.
+
+Sinks that require coordinates refuse to start without them rather than
+substituting a default, because a default would silently publish your readings
+attributed to the wrong place.
 
 ## Sinks
 
@@ -216,6 +229,11 @@ every other backend. Grafana Alloy and Telegraf both scrape it.
 
 radmon uses a separate **data-sending password**, distinct from your account
 login password. Set that one.
+
+> **SECURITY:** Supply it with `GOGMC_RADMON_PASSWORD_FILE` rather than a plain
+> environment variable. A plain variable is readable by anyone who can run
+> `docker inspect`. If this password has ever appeared in a log, rotate it at
+> radmon.org.
 
 Its API is GET-only, so credentials necessarily appear in the request URL. Over
 HTTPS the query string is encrypted in transit, so the risk is not interception
@@ -396,6 +414,17 @@ sudo ./gmc-probe -device /dev/ttyUSB0 -iterations 20 -out capture.json
 
 Note the serial port is exclusive: stop anything else using the device first, or
 you will get interleaved output that looks exactly like a protocol bug.
+
+## Documentation
+
+| Document | Use it for |
+|---|---|
+| [docs/RUNBOOK.md](docs/RUNBOOK.md) | It is broken and you are on call |
+| [docs/ENV_VARS.md](docs/ENV_VARS.md) | Every configuration setting, and where to get each secret |
+| [SECURITY.md](SECURITY.md) | Credential handling, reporting a vulnerability |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | Making a change |
+| [docs/protocol-measurements.md](docs/protocol-measurements.md) | Why the hardware behaves as it does, with evidence |
+| [docs/assumptions.md](docs/assumptions.md) | Non-obvious decisions and why they were made |
 
 ## Licence
 

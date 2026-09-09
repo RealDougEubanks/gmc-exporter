@@ -1,3 +1,9 @@
+<!--
+doc: PROTOCOL-MEASUREMENTS
+last-refreshed: 2026-09-09
+generated-by: doc-refresh skill
+-->
+
 # Protocol measurements
 
 Everything this exporter believes about the GMC serial protocol comes from one
@@ -44,7 +50,7 @@ for the duration of each capture and restarted immediately afterwards.
 | Config | 100 iterations of `<GETCFG>>`, back to back | `internal/gmc/testdata/captures/getcfg-100iter.json` |
 
 These files are the raw probe output, committed verbatim. The protocol tests
-replay all 1,938 recorded exchanges, so the test suite exercises real wire
+replay all 1,860 recorded exchanges, so the test suite exercises real wire
 behaviour on machines with no hardware attached.
 
 ## Response lengths: measured against the specification

@@ -285,7 +285,7 @@ func buildSinks(cfg *config.Config, device mqtt.Device, log *slog.Logger) (*prom
 		if err != nil {
 			return nil, nil, fmt.Errorf("radmon.org: %w", err)
 		}
-		sinks = append(sinks, s)
+		sinks = append(sinks, sink.Throttle(s, cfg.Radmon.MinInterval))
 	}
 
 	if cfg.InfluxV1.Enabled {
@@ -293,7 +293,7 @@ func buildSinks(cfg *config.Config, device mqtt.Device, log *slog.Logger) (*prom
 		if err != nil {
 			return nil, nil, fmt.Errorf("influxdb 1.x: %w", err)
 		}
-		sinks = append(sinks, s)
+		sinks = append(sinks, sink.Throttle(s, cfg.InfluxV1.MinInterval))
 	}
 
 	if cfg.InfluxV2.Enabled {
@@ -301,7 +301,7 @@ func buildSinks(cfg *config.Config, device mqtt.Device, log *slog.Logger) (*prom
 		if err != nil {
 			return nil, nil, fmt.Errorf("influxdb 2.x: %w", err)
 		}
-		sinks = append(sinks, s)
+		sinks = append(sinks, sink.Throttle(s, cfg.InfluxV2.MinInterval))
 	}
 
 	if cfg.OTLP.Enabled {
@@ -309,7 +309,7 @@ func buildSinks(cfg *config.Config, device mqtt.Device, log *slog.Logger) (*prom
 		if err != nil {
 			return nil, nil, fmt.Errorf("otlp: %w", err)
 		}
-		sinks = append(sinks, s)
+		sinks = append(sinks, sink.Throttle(s, cfg.OTLP.MinInterval))
 	}
 
 	if cfg.MQTT.Enabled {
@@ -317,7 +317,7 @@ func buildSinks(cfg *config.Config, device mqtt.Device, log *slog.Logger) (*prom
 		if err != nil {
 			return nil, nil, fmt.Errorf("mqtt: %w", err)
 		}
-		sinks = append(sinks, s)
+		sinks = append(sinks, sink.Throttle(s, cfg.MQTT.MinInterval))
 	}
 
 	if cfg.GMCMap.Enabled {
@@ -325,7 +325,7 @@ func buildSinks(cfg *config.Config, device mqtt.Device, log *slog.Logger) (*prom
 		if err != nil {
 			return nil, nil, fmt.Errorf("gmcmap: %w", err)
 		}
-		sinks = append(sinks, s)
+		sinks = append(sinks, sink.Throttle(s, cfg.GMCMap.MinInterval))
 	}
 
 	if cfg.Safecast.Enabled {
@@ -333,7 +333,7 @@ func buildSinks(cfg *config.Config, device mqtt.Device, log *slog.Logger) (*prom
 		if err != nil {
 			return nil, nil, fmt.Errorf("safecast: %w", err)
 		}
-		sinks = append(sinks, s)
+		sinks = append(sinks, sink.Throttle(s, cfg.Safecast.MinInterval))
 	}
 
 	return metrics, sinks, nil
