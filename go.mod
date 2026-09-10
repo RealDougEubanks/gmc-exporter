@@ -1,6 +1,6 @@
 module github.com/RealDougEubanks/gmc-exporter
 
-go 1.25.0
+go 1.26.0
 
 require (
 	github.com/eclipse/paho.mqtt.golang v1.5.1
@@ -12,7 +12,7 @@ require (
 	go.opentelemetry.io/otel/sdk v1.46.0
 	go.opentelemetry.io/otel/sdk/metric v1.46.0
 	go.opentelemetry.io/proto/otlp v1.11.0
-	golang.org/x/sys v0.47.0
+	golang.org/x/sys v0.48.0
 	google.golang.org/protobuf v1.36.12
 )
 
