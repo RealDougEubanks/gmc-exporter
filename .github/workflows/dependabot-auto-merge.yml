@@ -1,0 +1,49 @@
+name: Dependabot auto-merge
+
+# Dependabot opens the pull request, CI proves it, and this merges it.
+#
+# Only patch and minor updates. A major update can change behaviour in ways no
+# test here would notice, so those wait for a human. Security updates are merged
+# at any level, because leaving a known vulnerability in place while waiting for
+# review is the worse risk.
+#
+# This does not bypass anything: branch protection still requires every status
+# check to pass. Auto-merge simply queues the merge for when they do.
+
+on: pull_request_target
+
+permissions:
+  contents: read
+
+jobs:
+  auto-merge:
+    if: github.actor == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Read what Dependabot is proposing
+        id: meta
+        uses: dependabot/fetch-metadata@21025c705c08248db411dc16f3619e6b5f9ea21a # v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Enable auto-merge
+        if: |
+          steps.meta.outputs.update-type == 'version-update:semver-patch' ||
+          steps.meta.outputs.update-type == 'version-update:semver-minor' ||
+          steps.meta.outputs.alert-state == 'OPEN'
+        run: gh pr merge --squash --auto "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Explain why a major update was left alone
+        if: steps.meta.outputs.update-type == 'version-update:semver-major'
+        run: |
+          gh pr comment "$PR_URL" --body \
+            "Left for review: this is a **major** update (\`${{ steps.meta.outputs.previous-version }}\` to \`${{ steps.meta.outputs.new-version }}\`). Auto-merge covers patch and minor updates, and security updates at any level."
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
