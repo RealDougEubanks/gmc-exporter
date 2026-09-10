@@ -1,3 +1,13 @@
+# Dependency updates run weekly on Friday morning, local time.
+#
+# Friday is deliberate: an update that needs attention lands with a working day
+# left to deal with it, rather than arriving on a Saturday or sitting unseen
+# until Monday. The time is given with a timezone so it does not drift by an
+# hour twice a year the way a fixed UTC cron would.
+#
+# Patch and minor updates merge themselves once CI passes, and security updates
+# merge at any level. See .github/workflows/dependabot-auto-merge.yml.
+
 version: 2
 
 updates:
@@ -5,6 +15,9 @@ updates:
     directory: "/"
     schedule:
       interval: weekly
+      day: friday
+      time: "06:00"
+      timezone: America/New_York
     open-pull-requests-limit: 5
     commit-message:
       prefix: "deps"
@@ -22,6 +35,9 @@ updates:
     directory: "/"
     schedule:
       interval: weekly
+      day: friday
+      time: "06:00"
+      timezone: America/New_York
     commit-message:
       prefix: "ci"
 
@@ -29,5 +45,8 @@ updates:
     directory: "/"
     schedule:
       interval: weekly
+      day: friday
+      time: "06:00"
+      timezone: America/New_York
     commit-message:
       prefix: "docker"
