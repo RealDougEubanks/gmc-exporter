@@ -13,9 +13,11 @@ on:
   pull_request:
     branches: [main]
   schedule:
-    # Weekly, so a newly published query finds existing code without waiting for
-    # someone to push.
-    - cron: "27 4 * * 1"
+    # Weekly on Friday morning, matching the Dependabot schedule so all
+    # scheduled security work lands in one window with a working day left to
+    # act on it. 11:00 UTC is 07:00 EDT / 06:00 EST; cron has no timezone, so
+    # this is chosen to stay in the morning on both sides of the clock change.
+    - cron: "0 11 * * 5"
 
 permissions:
   contents: read
