@@ -74,12 +74,21 @@ jobs:
           commits=$(git log --format='%s%n%b' "$range")
           files=$(git diff --name-only "$range")
 
-          # A release exists to ship a binary. If nothing outside documentation
-          # changed then the binary is byte-identical, and a new version number
-          # would be saying something untrue about it.
-          code=$(printf '%s\n' "$files" | grep -vE '^(docs/|README\.md$|CONTRIBUTING\.md$|SECURITY\.md$|LICENSE$|\.github/ISSUE_TEMPLATE/|\.github/PULL_REQUEST_TEMPLATE\.md$)' || true)
+          # A release exists to ship a binary. If nothing changed that can
+          # affect the built artifact, the binary is byte-identical and a new
+          # version number would be saying something untrue about it.
+          #
+          # Excluded: documentation, repository metadata, and everything under
+          # .github, which covers CI and the release workflow itself. Included,
+          # and deliberately so: the Dockerfile, go.mod, go.sum and all Go
+          # source, since each of those does change the image.
+          #
+          # To exercise a changed release workflow, run this workflow manually
+          # with workflow_dispatch, which overrides this check.
+          code=$(printf '%s\n' "$files" | grep -vE '^(docs/|\.github/|[^/]+\.md$|LICENSE$|\.gitignore$|\.golangci\.yml$|\.env\.example$)' || true)
           if [ -z "$code" ] && [ -z "${FORCED:-}" ]; then
-            echo "Documentation only; no release"
+            echo "No change that can affect the built artifact; no release"
+            printf '%s\n' "$files" | sed 's/^/  skipped: /'
             echo "release=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
