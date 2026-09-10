@@ -1,0 +1,30 @@
+name: Sync Docker Hub description
+
+# Kept out of the release workflow so a documentation-only change still updates
+# the Docker Hub listing. Documentation changes do not produce a release, since
+# the binary would be byte-identical.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - docs/dockerhub-overview.md
+      - .github/workflows/dockerhub-description.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: peter-evans/dockerhub-description@432a30c9e07499fd01da9f8a49f0faf9e0ca5b77 # v4
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: dougeubanks/gmc-exporter
+          short-description: "GQ Electronics GMC Geiger counter exporter: Prometheus, InfluxDB, MQTT, radmon, Safecast"
+          readme-filepath: ./docs/dockerhub-overview.md
+          enable-url-completion: true
