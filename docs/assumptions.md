@@ -130,12 +130,18 @@ in [protocol-measurements.md](./protocol-measurements.md).
 - **Recorded by:** Claude Code (Sonnet 4.6)
 - **Date:** 2026-09-08
 
-### `govulncheck` is not yet in CI
+### `govulncheck` runs in CI alongside Dependabot
 
-- **Assumption:** Running it manually before a release is acceptable for now.
-- **Why:** Not a deliberate design choice, just work not yet done. Recorded so
-  it is visible rather than forgotten.
-- **Action:** Add a `govulncheck ./...` step to `.github/workflows/ci.yml`.
+- **Assumption:** Both tools are worth running, because they answer different
+  questions.
+- **Why:** Dependabot flags a dependency whose *version* matches an advisory.
+  `govulncheck` analyses the call graph and reports whether the vulnerable
+  *symbols* are reachable from this code. The difference is not academic: the
+  first alert this repository received was a HIGH severity gRPC advisory
+  affecting xDS servers, and `govulncheck` reported no vulnerabilities because
+  gRPC is used here only as an OTLP client. The dependency was updated anyway,
+  since the fix was free, but knowing it was unreachable is what tells you
+  whether to act at 2am or on Monday.
 - **Recorded by:** Claude Code (Sonnet 4.6)
 - **Date:** 2026-09-09
 

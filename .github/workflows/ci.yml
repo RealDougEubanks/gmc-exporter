@@ -48,6 +48,15 @@ jobs:
       - name: go vet
         run: go vet ./...
 
+      # Dependabot flags a dependency whose version matches an advisory.
+      # govulncheck goes further and checks whether the vulnerable symbols are
+      # actually reachable from this code, which is the question that decides
+      # whether an alert needs acting on.
+      - name: govulncheck
+        run: |
+          go install golang.org/x/vuln/cmd/govulncheck@latest
+          "$(go env GOPATH)/bin/govulncheck" ./...
+
       - name: Build
         run: go build ./...
 
