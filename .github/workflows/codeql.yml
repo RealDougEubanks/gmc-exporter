@@ -1,0 +1,64 @@
+name: CodeQL
+
+# CodeQL complements the other checks rather than duplicating them.
+# golangci-lint catches style and common mistakes; govulncheck reports whether a
+# known vulnerable dependency symbol is reachable. CodeQL performs taint
+# analysis, which is what finds a path from untrusted input to a dangerous sink.
+# That matters here because every reading originates from an unauthenticated
+# serial device and several sinks put values into URLs.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Weekly, so a newly published query finds existing code without waiting for
+    # someone to push.
+    - cron: "27 4 * * 1"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: codeql-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze:
+    name: Analyze Go
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      # Required to upload results to the Security tab.
+      security-events: write
+      # Required by the action to read workflow run metadata.
+      actions: read
+      contents: read
+
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
+        with:
+          go-version: "1.25"
+          cache: true
+
+      - name: Initialise CodeQL
+        uses: github/codeql-action/init@faaca9a8f6edddba5725ffe5adefdab6669a2eca # v3
+        with:
+          languages: go
+          # security-extended adds queries that are lower precision but catch
+          # more. This codebase is small enough to triage the extra findings.
+          queries: security-extended
+
+      # Built explicitly rather than with autobuild. The device layer is
+      # Linux-only behind build tags, so an unguessed build could analyse the
+      # portable stub instead of the real serial implementation.
+      - name: Build
+        run: go build ./...
+
+      - name: Analyze
+        uses: github/codeql-action/analyze@faaca9a8f6edddba5725ffe5adefdab6669a2eca # v3
+        with:
+          category: "/language:go"
