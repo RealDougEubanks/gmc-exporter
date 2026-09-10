@@ -92,6 +92,19 @@ jobs:
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
 
+      # Docker Hub shows nothing unless the description is pushed explicitly.
+      # Doing it here keeps the listing in step with the released image instead
+      # of drifting until someone notices it is blank.
+      - name: Update Docker Hub description
+        uses: peter-evans/dockerhub-description@v4
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: ${{ env.IMAGE }}
+          short-description: "GQ Electronics GMC Geiger counter exporter: Prometheus, InfluxDB, MQTT, radmon, Safecast"
+          readme-filepath: ./docs/dockerhub-overview.md
+          enable-url-completion: true
+
       - name: Publish release notes
         uses: softprops/action-gh-release@v2
         with:
