@@ -1,0 +1,60 @@
+name: Bug report
+description: Something is not working
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        > **Do not paste credentials.** Logs are redacted, but check before
+        > pasting: search your log text for your radmon password, InfluxDB
+        > password, MQTT password, or API keys.
+        >
+        > For a **security vulnerability**, do not open an issue. Use a private
+        > advisory: https://github.com/RealDougEubanks/gmc-exporter/security/advisories/new
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Output of `gmc-exporter --version`, or your image tag.
+      placeholder: v1.0.0
+    validations:
+      required: true
+  - type: input
+    id: hardware
+    attributes:
+      label: Counter model and firmware
+      description: From the startup log, or `<GETVER>>`.
+      placeholder: GMC-320Re 4.62
+    validations:
+      required: true
+  - type: dropdown
+    id: sinks
+    attributes:
+      label: Which sinks are enabled?
+      multiple: true
+      options: [Prometheus, InfluxDB 1.x, InfluxDB 2.x, OTLP, MQTT, radmon.org, GMCMAP, Safecast]
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log lines
+      description: |
+        `docker logs --tail 100 <container> | grep -v '"level":"INFO"'`
+        A healthy exporter produces no output above INFO.
+      render: shell
+  - type: textarea
+    id: health
+    attributes:
+      label: Output of /health
+      description: "`curl -s localhost:9101/health`. It contains no credentials by design."
+      render: json
+  - type: input
+    id: device
+    attributes:
+      label: How is the device passed to the container?
+      description: "e.g. `--device=/dev/ttyUSB0 --group-add=16`, or a volume mapping with --privileged."
